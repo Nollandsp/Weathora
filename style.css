@@ -11,7 +11,7 @@
 }
 
 body {
-  background-color: var(--color-body);
+  background: linear-gradient(to bottom, #1f1f1f, #2c2f36, #4b4f56, #a89f91);
   font-family: "Inter Tight", sans-serif;
   scroll-behavior: smooth;
 }
@@ -74,6 +74,13 @@ h2 {
   margin-top: 1rem;
 }
 
+.btn-head {
+  margin-top: 25px;
+  border-radius: 7px;
+  color: white;
+  background-color: rgb(179, 179, 33);
+}
+
 /* Main */
 form {
   display: flex;
@@ -86,25 +93,86 @@ input[type="search"] {
   font-size: 16px;
   width: 300px;
   border: 1px solid #ccc;
-  border-radius: 5px 0 0 5px;
+  border-radius: 10px 0 0 5px;
   opacity: 50%;
 }
 
 button {
-  padding: 8px 16px;
+  padding: 8px 5px;
   font-size: 16px;
-  background-color: #007bff;
+  background-color: rgb(179, 179, 33);
   color: white;
   border: none;
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 5px 10px 0;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: rgb(179, 179, 33);
 }
 
 /* INFORMATION METEO */
 .information {
-    
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.img-back {
+  width: 90%;
+  height: 80vh; /* ou 80vh si tu veux relatif à l'écran */
+  object-fit: cover;
+  display: block;
+  border-radius: 20px;
+}
+
+.city {
+  position: absolute;
+  top: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.city h3 {
+  position: relative;
+  left: 10%;
+  margin-bottom: 10px;
+}
+
+.forecast {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  width: 40%;
+  color: white;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.forecast img {
+  width: 40%;
+  height: auto;
+}
+
+.tempartures1 {
+  margin-top: 10px;
+  font-size: 27px;
+}
+
+.tempartures2 {
+  margin-top: 10px;
+  font-size: 10px;
 }
