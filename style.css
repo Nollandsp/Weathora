@@ -123,7 +123,7 @@ button:hover {
 
 .img-back {
   width: 90%;
-  height: 80vh; /* ou 80vh si tu veux relatif à l'écran */
+  height: 60vh; /* ou 80vh si tu veux relatif à l'écran */
   object-fit: cover;
   display: block;
   border-radius: 20px;
@@ -148,6 +148,7 @@ button:hover {
 
 .forecast {
   position: absolute;
+  margin-top: 25px;
   top: 20%;
   left: 50%;
   transform: translateX(-50%);
@@ -156,7 +157,7 @@ button:hover {
   -webkit-backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 20px;
-  width: 40%;
+  width: 50%;
   color: white;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -169,10 +170,72 @@ button:hover {
 
 .tempartures1 {
   margin-top: 10px;
-  font-size: 27px;
+  font-size: 30px;
 }
 
 .tempartures2 {
   margin-top: 10px;
-  font-size: 10px;
+  font-size: 17px;
+}
+
+.statistics {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  margin-top: 45px;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 15px;
+  width: 80%;
+  color: white;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-p1,
+.stat-value {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.statistics img {
+  width: 30px;
+  height: auto;
+}
+
+/* Séparateur interne */
+.inner-separator {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.map {
+  margin-top: 25px;
+  width: 5%;
+  padding: 5px;
 }

@@ -8,7 +8,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
-    <title>Document</title>
+    <title>Weathora</title>
   </head>
   <body>
     <header>
@@ -34,9 +34,9 @@
           Votre météo de confiance, pour illuminer vos journées et vous guider
           en douceur, qu’il pleuve ou qu’il fasse soleil.
         </h4>
-        <a href="#decouvrir">
-          <button class="btn-head">Découvrir la météo du jour</button></a
-        >
+        <button class="btn-head" id="scrollToForecast">
+          Découvrir la météo du jour
+        </button>
       </div>
     </header>
     <main>
@@ -56,8 +56,47 @@
           <p class="tempartures1">23°c</p>
           <p class="tempartures2">23°c - 27°c</p>
         </div>
-        <div class="statistics"></div>
+        <div class="statistics">
+          <div class="stat-row">
+            <div class="stat-item">
+              <img src="./Images/thermometre.png" alt="thermomètre" />
+              <div class="stat-text">
+                <p class="stat-p1"><b>Ressenti</b></p>
+                <p class="stat-value">26°C</p>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <img src="./Images/vent.png" alt="Vent" />
+              <div class="stat-text">
+                <p class="stat-p1"><b>Vent</b></p>
+                <p class="stat-value">10km/h</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="inner-separator"></div>
+
+          <div class="stat-row">
+            <div class="stat-item">
+              <img src="./Images/humidite.png" alt="Humidité" />
+              <div class="stat-text">
+                <p class="stat-p1"><b>Humidité</b></p>
+                <p class="stat-value">70%</p>
+              </div>
+            </div>
+
+            <div class="stat-item">
+              <img src="./Images/precipitation.png" alt="Pression" />
+              <div class="stat-text">
+                <p class="stat-p1"><b>Pression</b></p>
+                <p class="stat-value">0%</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
+      <!-- JS MAP -->
     </main>
 
     <script src="./script.js"></script>
