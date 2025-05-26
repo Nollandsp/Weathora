@@ -26,9 +26,6 @@
             alt="Weathora"
           />
         </a>
-        <ul>
-          <li><a href="">À Propos de nous</a></li>
-        </ul>
         <h2>Bienvenue sur Weathora</h2>
         <h4>
           Votre météo de confiance, pour illuminer vos journées et vous guider
@@ -40,21 +37,31 @@
       </div>
     </header>
     <main>
-      <form action="/recherche">
-        <input type="search" name="search" placeholder="Rechercher..." />
+      <form id="search-form">
+        <input
+          type="search"
+          id="search-input"
+          name="search"
+          placeholder="Rechercher..."
+        />
         <button type="submit" class="weather-button">Rechercher</button>
       </form>
-      <!-- <h2>JS A METTRE </h2> -->
+      <div id="decouvrir" id="search-result" class="search-result"></div>
       <section class="information">
-        <img class="img-back" src="./Images/nuages-ensoleillé.jpg" alt="" />
+        <img class="img-back" src="./Images/default.jpg" alt="" />
         <div class="city">
-          <h3>Monaco</h3>
-          <p>Jeudi 17 Mai</p>
+          <h3></h3>
+          <p></p>
         </div>
-        <div id="decouvrir" class="forecast">
-          <img src="./Images/soleil.png" alt="Sun" />
-          <p class="tempartures1">23°c</p>
-          <p class="tempartures2">23°c - 27°c</p>
+        <div class="forecast">
+          <img
+            id="weather-icon"
+            src=""
+            alt="Météo"
+            style="width: 100px; height: auto"
+          />
+          <p class="tempartures1"></p>
+          <p class="tempartures2"></p>
         </div>
         <div class="statistics">
           <div class="stat-row">
@@ -62,7 +69,7 @@
               <img src="./Images/thermometre.png" alt="thermomètre" />
               <div class="stat-text">
                 <p class="stat-p1"><b>Ressenti</b></p>
-                <p class="stat-value">26°C</p>
+                <p class="stat-value"></p>
               </div>
             </div>
 
@@ -70,7 +77,7 @@
               <img src="./Images/vent.png" alt="Vent" />
               <div class="stat-text">
                 <p class="stat-p1"><b>Vent</b></p>
-                <p class="stat-value">10km/h</p>
+                <p class="stat-value"></p>
               </div>
             </div>
           </div>
@@ -82,7 +89,7 @@
               <img src="./Images/humidite.png" alt="Humidité" />
               <div class="stat-text">
                 <p class="stat-p1"><b>Humidité</b></p>
-                <p class="stat-value">70%</p>
+                <p class="stat-value"></p>
               </div>
             </div>
 
@@ -90,14 +97,31 @@
               <img src="./Images/precipitation.png" alt="Pression" />
               <div class="stat-text">
                 <p class="stat-p1"><b>Pression</b></p>
-                <p class="stat-value">0%</p>
+                <p class="stat-value"></p>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <!-- JS MAP -->
     </main>
+    <!-- Loader soleil animé -->
+    <div id="loader" class="loader-container">
+      <div class="sun">
+        <div class="center"></div>
+        <div class="ray r-1"></div>
+        <div class="ray r-2"></div>
+        <div class="ray r-3"></div>
+        <div class="ray r-4"></div>
+        <div class="ray r-5"></div>
+        <div class="ray r-6"></div>
+        <div class="ray r-7"></div>
+        <div class="ray r-8"></div>
+      </div>
+    </div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <div id="map"></div>
 
     <script src="./script.js"></script>
   </body>
