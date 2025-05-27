@@ -44,6 +44,7 @@
           name="search"
           placeholder="Rechercher..."
         />
+        <div id="suggestions-container" class="suggestions"></div>
         <button type="submit" class="weather-button">Rechercher</button>
       </form>
       <div id="decouvrir" id="search-result" class="search-result"></div>
@@ -54,12 +55,7 @@
           <p></p>
         </div>
         <div class="forecast">
-          <img
-            id="weather-icon"
-            src=""
-            alt="Météo"
-            style="width: 100px; height: auto"
-          />
+          <img id="weather-icon" src="" style="width: 100px; height: auto" />
           <p class="tempartures1"></p>
           <p class="tempartures2"></p>
         </div>
@@ -121,7 +117,16 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+    <section class="forecast-extended">
+      <h3>Prévisions sur 5 jours</h3>
+      <div class="forecast-cards" id="forecast-cards"></div>
+    </section>
+
     <div id="map"></div>
+    <footer class="footer">
+      <p>© 2025 Weathora. Tous droits réservés.</p>
+      <p>Conçu par Da Silva Pereira Nollan</p>
+    </footer>
 
     <script src="./script.js"></script>
   </body>

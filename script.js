@@ -11,9 +11,9 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 // DEBUT DE L'UTILISATION DE L'API //
-// Rappel des ID et Nom de Class utilisé
 let form = document.getElementById("search-form");
 let input = document.getElementById("search-input");
+let suggestionsContainer = document.getElementById("suggestions-container");
 let cityNameEl = document.querySelector(".city h3");
 let cityDescEl = document.querySelector(".city p");
 let temp1 = document.querySelector(".tempartures1");
@@ -22,10 +22,10 @@ let statValues = document.querySelectorAll(".stat-value");
 let backgroundImage = document.querySelector(".img-back");
 let loader = document.getElementById("loader");
 let weatherIcon = document.getElementById("weather-icon");
+let forecastCards = document.getElementById("forecast-cards");
 
 let API_KEY = "8eb2d4000ed188a4ae05666fa24891c9";
 
-// Permet d'obtenir et faire dispraître loader
 function showLoader() {
   loader.style.display = "block";
 }
@@ -71,6 +71,81 @@ function updateBackground(weatherMain) {
   }
 }
 
+let debounceTimeout;
+
+// Autocomplétion suggestions
+input.addEventListener("input", () => {
+  clearTimeout(debounceTimeout);
+  const query = input.value.trim();
+  if (query.length < 1) {
+    suggestionsContainer.innerHTML = "";
+    return;
+  }
+
+  debounceTimeout = setTimeout(async () => {
+    try {
+      const response = await fetch(
+        `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(
+          query
+        )}&fields=departement&boost=population&limit=5`
+      );
+      const data = await response.json();
+
+      suggestionsContainer.innerHTML = "";
+
+      data.forEach((commune) => {
+        const suggestion = document.createElement("div");
+        suggestion.textContent = `${commune.nom} (${commune.departement.nom})`;
+        suggestion.addEventListener("click", () => {
+          input.value = commune.nom;
+          suggestionsContainer.innerHTML = "";
+        });
+        suggestionsContainer.appendChild(suggestion);
+      });
+    } catch (error) {
+      console.error("Erreur fetch suggestions :", error);
+    }
+  }, 300);
+});
+
+// Fermer suggestions si clic à l'extérieur
+document.addEventListener("click", (e) => {
+  if (!suggestionsContainer.contains(e.target) && e.target !== input) {
+    suggestionsContainer.innerHTML = "";
+  }
+});
+
+// Fonction pour afficher les prévisions à 5 jours
+function updateForecastCards(data) {
+  forecastCards.innerHTML = "";
+  const days = {};
+
+  data.list.forEach((entry) => {
+    const date = new Date(entry.dt_txt);
+    const day = date.toLocaleDateString("fr-FR", { weekday: "short" });
+    const time = date.getHours();
+
+    if (!days[day] && time === 12) {
+      days[day] = entry;
+    }
+  });
+
+  Object.entries(days).forEach(([day, entry]) => {
+    const icon = entry.weather[0].icon;
+    const temp = entry.main.temp.toFixed(1);
+    const desc = entry.weather[0].description;
+
+    const card = document.createElement("div");
+    card.className = "forecast-card";
+    card.innerHTML = `
+      <p><strong>${day}</strong></p>
+      <img src="https://openweathermap.org/img/wn/${icon}.png" alt="${desc}" />
+      <p>${temp}°C</p>
+    `;
+    forecastCards.appendChild(card);
+  });
+}
+
 // Fonction principale de récupération météo
 async function getWeather(city) {
   try {
@@ -86,8 +161,8 @@ async function getWeather(city) {
       return;
     }
 
-    const fullCityName = geoData[0].nom;
-    const department = geoData[0].departement.nom;
+    let fullCityName = geoData[0].nom;
+    let department = geoData[0].departement.nom;
 
     const weatherResponse = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${fullCityName}&appid=${API_KEY}&units=metric&lang=fr`
@@ -99,21 +174,19 @@ async function getWeather(city) {
       return;
     }
 
-    const weatherMain = weatherData.weather[0].main;
-    const weatherDescription = weatherData.weather[0].description;
-    const temp = weatherData.main.temp;
-    const feelsLike = weatherData.main.feels_like;
-    const humidity = weatherData.main.humidity;
-    const pressure = weatherData.main.pressure;
-    const wind = weatherData.wind.speed;
+    let weatherMain = weatherData.weather[0].main;
+    let weatherDescription = weatherData.weather[0].description;
+    let temp = weatherData.main.temp;
+    let feelsLike = weatherData.main.feels_like;
+    let humidity = weatherData.main.humidity;
+    let pressure = weatherData.main.pressure;
+    let wind = weatherData.wind.speed;
 
-    // Mise à jour de l'icône météo en temps réel
     const iconCode = weatherData.weather[0].icon;
     const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
     weatherIcon.src = iconUrl;
     weatherIcon.alt = weatherDescription;
 
-    // Affichage des infos dans la page
     cityNameEl.textContent = fullCityName;
     cityDescEl.textContent = `${weatherDescription}, ${department}`;
     temp1.textContent = `${temp.toFixed(1)}°C`;
@@ -124,6 +197,13 @@ async function getWeather(city) {
     statValues[3].textContent = `${pressure} hPa`;
 
     updateBackground(weatherMain);
+
+    // Récupération des prévisions 5 jours
+    const forecastResponse = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${fullCityName}&appid=${API_KEY}&units=metric&lang=fr`
+    );
+    const forecastData = await forecastResponse.json();
+    updateForecastCards(forecastData);
 
     // Mise à jour de la carte avec Leaflet
     const { lat, lon } = weatherData.coord;
@@ -147,11 +227,11 @@ form.addEventListener("submit", (e) => {
 });
 
 // Carte Leaflet par défaut (Paris)
-const map = L.map("map").setView([48.8566, 2.3522], 13);
+let map = L.map("map").setView([48.8566, 2.3522], 13);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap contributors",
 }).addTo(map);
-const marker = L.marker([48.8566, 2.3522])
+let marker = L.marker([48.8566, 2.3522])
   .addTo(map)
   .bindPopup("Paris")
   .openPopup();
