@@ -11,6 +11,7 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 // DEBUT DE L'UTILISATION DE L'API //
+// Rappel des ID et des noms de classes 
 let form = document.getElementById("search-form");
 let input = document.getElementById("search-input");
 let suggestionsContainer = document.getElementById("suggestions-container");
@@ -26,6 +27,7 @@ let forecastCards = document.getElementById("forecast-cards");
 
 let API_KEY = "8eb2d4000ed188a4ae05666fa24891c9";
 
+// Mise en place du Loader soleil
 function showLoader() {
   loader.style.display = "block";
 }
@@ -73,7 +75,7 @@ function updateBackground(weatherMain) {
 
 let debounceTimeout;
 
-// Autocomplétion suggestions
+// Autocomplétion suggestions des villes
 input.addEventListener("input", () => {
   clearTimeout(debounceTimeout);
   const query = input.value.trim();
@@ -182,8 +184,8 @@ async function getWeather(city) {
     let pressure = weatherData.main.pressure;
     let wind = weatherData.wind.speed;
 
-    const iconCode = weatherData.weather[0].icon;
-    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    let iconCode = weatherData.weather[0].icon;
+    let iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
     weatherIcon.src = iconUrl;
     weatherIcon.alt = weatherDescription;
 

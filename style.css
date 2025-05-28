@@ -1,8 +1,8 @@
 :root {
   /* Couleurs principales */
-  --color-body: #a28888; 
+  --color-body: #a28888;
   --color-text: #111;
-  --color2-text: white; 
+  --color2-text: white;
 
   /* Couleurs header */
   --color-header-bg: rgba(0, 0, 0, 0.6);
@@ -172,7 +172,7 @@ input[type="search"]:focus {
 .suggestions {
   position: absolute;
   background-color: var(--color-suggestions-bg);
-  width: 50%;
+  width: 30%;
   top: 111%;
   max-height: 200px;
   overflow-y: auto;
@@ -281,11 +281,13 @@ input[type="search"]:focus {
 .tempartures1 {
   margin-top: 10px;
   font-size: 30px;
+  font-weight: bold;
 }
 
 .tempartures2 {
   margin-top: 10px;
   font-size: 17px;
+  font-weight: bold;
 }
 
 .statistics {
@@ -482,8 +484,8 @@ input[type="search"]:focus {
 .forecast-card p {
   margin: 0.5rem 0;
   font-size: 0.95rem;
+  font-weight: bold;
 }
-
 
 #map {
   margin: auto;
@@ -513,9 +515,6 @@ input[type="search"]:focus {
 .footer p:last-child {
   color: #d1d1d1;
 }
-
-
-
 
 /* VERSION TABLETTE */
 @media (min-width: 600px) and (max-width: 1024px) {
@@ -648,9 +647,6 @@ input[type="search"]:focus {
     height: 300px;
   }
 }
-
-
-
 
 /* VERSION DESKTOP */
 @media (min-width: 1025px) {
