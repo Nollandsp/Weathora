@@ -17,7 +17,6 @@
         src="./Images/nicolas-hippert-_7yudZhd6Cw-unsplash.jpg"
         alt="Landscape"
       />
-
       <div class="header-content">
         <a href="/index.html">
           <img
@@ -36,7 +35,10 @@
         </button>
       </div>
     </header>
+
     <main>
+      <div id="decouvrir" class="search-result"></div>
+
       <form id="search-form">
         <input
           type="search"
@@ -45,14 +47,16 @@
           placeholder="Rechercher..."
         />
         <div id="suggestions-container" class="suggestions"></div>
+
         <button type="submit" class="weather-button">Rechercher</button>
       </form>
-      <div id="decouvrir" id="search-result" class="search-result"></div>
+      <div id="error-message"></div>
+
       <section class="information">
         <img class="img-back" src="./Images/default.jpg" alt="" />
         <div class="city">
-          <h3></h3>
-          <p></p>
+          <h3>Ville</h3>
+          <p>Département</p>
         </div>
         <div class="forecast">
           <img id="weather-icon" src="" style="width: 100px; height: auto" />
@@ -100,6 +104,7 @@
         </div>
       </section>
     </main>
+
     <!-- Loader soleil animé -->
     <div id="loader" class="loader-container">
       <div class="sun">
@@ -114,6 +119,8 @@
         <div class="ray r-8"></div>
       </div>
     </div>
+
+    <!-- Leaflet map styles and script -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -123,6 +130,7 @@
     </section>
 
     <div id="map"></div>
+
     <footer class="footer">
       <p>© 2025 Weathora. Tous droits réservés.</p>
       <p>Conçu par Da Silva Pereira Nollan</p>

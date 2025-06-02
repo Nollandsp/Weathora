@@ -2,7 +2,7 @@ Weathora est une application météo simple et intuitive, centrée exclusivement
 
 Un système d'autocomplétion est intégré pour faciliter la recherche et réduire les erreurs de saisie.
 
-Une carte est eventuellement mise à disposition pour l'utilisateurs afin de voir où se situe la ville qu'il tape depusi le barre de recherche.
+Une carte est eventuellement mise à disposition pour l'utilisateurs afin de voir où se situe la ville qu'il tape depuis le barre de recherche.
 
 Fonctionnalités :
 . Rechercher la météo par ville française.
@@ -25,7 +25,9 @@ Technologies utilisées :
 APIs utilisées :
 
 1. API Météo : OpenWeatherMap
+   https://openweathermap.org/current
    L'API Current Weather Data d'OpenWeatherMap fournit des données météorologiques en temps réel pour n’importe quelle ville dans le monde, y compris les villes françaises. Les données incluent la température, la météo, l’humidité, le vent, la pression atmosphérique, etc.
 
-2. geo.api.gouv.fr – API des communes françaises 
-L'API des communes françaises proposée par le gouvernement français permet de récupérer toutes les villes/communes françaises. Elle est utilisée ici pour la fonction d'autocomplétion : lorsque l’utilisateur commence à taper une ville, l’interface propose les correspondances les plus probables.
+2. API des communes françaises
+   https://geo.api.gouv.fr/decoupage-administratif/communes
+   L'API des communes françaises proposée par le gouvernement français permet de récupérer toutes les villes/communes françaises. Elle est utilisée ici pour la fonction d'autocomplétion : lorsque l’utilisateur commence à taper une ville, l’interface propose les correspondances les plus probables.

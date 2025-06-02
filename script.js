@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 // DEBUT DE L'UTILISATION DE L'API //
-// Rappel des ID et des noms de classes 
+// Rappel des ID et des noms de classes
 let form = document.getElementById("search-form");
 let input = document.getElementById("search-input");
 let suggestionsContainer = document.getElementById("suggestions-container");
@@ -81,6 +81,7 @@ input.addEventListener("input", () => {
   const query = input.value.trim();
   if (query.length < 1) {
     suggestionsContainer.innerHTML = "";
+    document.getElementById("error-message").textContent = ""; // Réinitialiser le message d'erreur
     return;
   }
 
@@ -94,6 +95,14 @@ input.addEventListener("input", () => {
       const data = await response.json();
 
       suggestionsContainer.innerHTML = "";
+      const errorMessage = document.getElementById("error-message");
+
+      if (data.length === 0) {
+        errorMessage.textContent = "Ville non trouvée, Réessayer";
+        return;
+      }
+
+      errorMessage.textContent = ""; // Réinitialiser si villes trouvées
 
       data.forEach((commune) => {
         const suggestion = document.createElement("div");
@@ -101,11 +110,14 @@ input.addEventListener("input", () => {
         suggestion.addEventListener("click", () => {
           input.value = commune.nom;
           suggestionsContainer.innerHTML = "";
+          errorMessage.textContent = ""; // Nettoyer le message d'erreur si une ville est sélectionnée
         });
         suggestionsContainer.appendChild(suggestion);
       });
     } catch (error) {
       console.error("Erreur fetch suggestions :", error);
+      document.getElementById("error-message").textContent =
+        "Erreur de connexion. Veuillez réessayer.";
     }
   }, 300);
 });
@@ -159,7 +171,6 @@ async function getWeather(city) {
     const geoData = await geoResponse.json();
 
     if (geoData.length === 0) {
-      alert("Ville non trouvée");
       return;
     }
 
