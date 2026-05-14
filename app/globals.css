@@ -152,7 +152,6 @@
   }
   html {
     @apply font-sans;
-    overflow-x: hidden;
     overscroll-behavior: none;
   }
   body {
