@@ -24,7 +24,7 @@ function updateBackground(weatherMain) {
   return map[weatherMain?.toLowerCase()] || "";
 }
 
-export default function MainWeather({ setFullCityName }) {
+export default function MainWeather({ setFullCityName, setCoords }) {
   const { unit, toggleUnit, convertTemp } = useUnit();
 
   const inputRef = useRef(null);
@@ -114,7 +114,7 @@ export default function MainWeather({ setFullCityName }) {
 
       if (data.cod !== 200) { setError("Erreur météo : " + data.message); return; }
 
-      const { weather, main, wind } = data;
+      const { weather, main, wind, coord } = data;
       setIconCode(weather[0].icon);
       setWeatherDesc(weather[0].description);
       setTempC(main.temp);
@@ -123,6 +123,7 @@ export default function MainWeather({ setFullCityName }) {
       setHumidity(main.humidity);
       setPressure(main.pressure);
       setBackgroundImage(updateBackground(weather[0].main));
+      if (setCoords) setCoords({ lat: coord.lat, lon: coord.lon });
     } catch {
       setError("Erreur de connexion");
     }
@@ -155,7 +156,7 @@ export default function MainWeather({ setFullCityName }) {
           setGeoLoading(false);
         }
       },
-      () => { setError("Géolocalisation refusée."); setGeoLoading(false); }
+      () => { setError("Position refusée — autorisez la localisation dans les réglages du navigateur."); setGeoLoading(false); }
     );
   };
 
@@ -195,7 +196,7 @@ export default function MainWeather({ setFullCityName }) {
 
   return (
     <main className="w-full flex flex-col bg-white">
-      <section className="relative w-full bg-[#A8A498] min-h-[500px] lg:min-h-[600px] flex flex-col lg:flex-row items-center justify-between px-6 md:px-12 lg:px-24 pt-32 pb-12 text-white overflow-hidden">
+      <section className="relative w-full bg-[#A8A498] min-h-[500px] lg:min-h-[600px] flex flex-col lg:flex-row items-center justify-between px-6 md:px-12 lg:px-24 pt-36 lg:pt-32 pb-12 text-white overflow-x-clip">
         {/* Fond photo météo */}
         {backgroundImage && (
           <div className="absolute inset-0 z-0">
@@ -208,11 +209,11 @@ export default function MainWeather({ setFullCityName }) {
         <div id="decouvrir" className="absolute top-0" aria-hidden="true" style={{ marginTop: "-64px", height: "64px" }} />
 
         {/* ── GAUCHE : infos météo ── */}
-        <div className="z-10 flex flex-col items-center lg:items-start text-center lg:text-left mb-12 lg:mb-0 w-full lg:w-1/2">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-condensed font-black uppercase tracking-wide mb-2 leading-none drop-shadow-md">
+        <div className="z-10 flex flex-col items-center lg:items-start text-center lg:text-left mb-10 lg:mb-0 w-full lg:w-1/2">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-condensed font-black uppercase tracking-wide mb-1 leading-none drop-shadow-md">
             {cityName || "RECHERCHEZ UNE VILLE"}
           </h1>
-          <p className="text-sm md:text-lg font-bold opacity-90 uppercase tracking-[0.2em] mb-8 lg:mb-12">
+          <p className="text-sm md:text-lg font-bold opacity-90 uppercase tracking-[0.2em] mb-3 lg:mb-12">
             {cityDesc ? `${cityDesc} • ` : ""}
             {new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
           </p>
