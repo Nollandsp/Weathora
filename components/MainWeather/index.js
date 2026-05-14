@@ -196,7 +196,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
 
   return (
     <main className="w-full flex flex-col bg-white">
-      <section className="relative w-full bg-[#A8A498] min-h-[500px] lg:min-h-[600px] flex flex-col lg:flex-row items-center justify-between px-6 md:px-12 lg:px-24 pt-36 lg:pt-32 pb-12 text-white overflow-x-clip">
+      <section className="relative w-full bg-[#A8A498] min-h-[500px] lg:min-h-[600px] flex flex-col lg:flex-row items-center justify-between px-6 md:px-12 lg:px-24 pb-12 text-white overflow-x-clip" style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 8rem)" }}>
         {/* Fond photo météo */}
         {backgroundImage && (
           <div className="absolute inset-0 z-0">
