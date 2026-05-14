@@ -47,7 +47,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="fixed left-1/2 -translate-x-1/2 z-[9999] w-[95%] sm:w-auto flex justify-center" style={{ top: "calc(env(safe-area-inset-top, 0px) + 1rem)" }}>
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] w-[95%] sm:w-auto flex justify-center">
       <nav className="flex items-center gap-5 sm:gap-8 rounded-full border border-white/20 bg-white/70 px-6 sm:px-10 py-3 shadow-2xl backdrop-blur-xl max-w-full overflow-x-auto no-scrollbar">
         {/* Logo + Accueil */}
         <Link

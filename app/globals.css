@@ -152,10 +152,12 @@
   }
   html {
     @apply font-sans;
+    background-color: #A8A498;
     overscroll-behavior: none;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #A8A498;
     overflow-x: hidden;
     overscroll-behavior: none;
   }

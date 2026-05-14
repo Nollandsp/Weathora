@@ -89,8 +89,9 @@ export default function Inscription() {
         <div className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-2 pt-32 lg:pt-40">
           {/* GAUCHE */}
           <div className="flex flex-col justify-start p-8 sm:p-16 lg:pt-10 lg:pl-24">
-            <h1 className="font-condensed text-[13vw] sm:text-[80px] lg:text-[110px] xl:text-[130px] font-black text-white uppercase leading-[0.8] tracking-wide">
-              INSCRIP-<br />TION
+            <h1 className="font-condensed text-[12vw] sm:text-[80px] lg:text-[110px] xl:text-[130px] font-black text-white uppercase leading-[0.8] tracking-wide">
+              <span className="sm:hidden">INSCRIPTION</span>
+              <span className="hidden sm:block">INSCRIP-<br />TION</span>
             </h1>
             <div className="flex items-center gap-3 mt-5">
               <div className="h-px w-10 bg-white/30" />
