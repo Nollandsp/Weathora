@@ -356,6 +356,8 @@ export default function MainWeather({ setFullCityName, setCoords }) {
         </div>
       </section>
 
+      {/* Transition gradient vers blanc */}
+      <div className="h-12 bg-gradient-to-b from-[#A8A498]/20 to-white pointer-events-none" />
     </main>
   );
 }

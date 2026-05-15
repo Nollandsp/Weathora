@@ -20,7 +20,7 @@ export default function Home() {
         <MainWeather setFullCityName={setFullCityName} setCoords={setCoords} />
       </div>
 
-      <main className="flex-grow">
+      <main className="flex-grow bg-white">
         {coords && (
           <section className="px-6 md:px-12 lg:px-24 py-12 bg-white">
             <div className="max-w-6xl mx-auto">
