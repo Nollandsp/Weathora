@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Crown, Heart, Map, Check, ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase/client";
 
 const features = [
   {
@@ -23,6 +25,42 @@ const features = [
 ];
 
 export default function Premium() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return null;
+
+  if (!user) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "#A8A498" }}>
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[4px] p-12 max-w-lg w-full text-center shadow-2xl">
+            <h2 className="font-condensed text-5xl font-black text-white uppercase mb-4 leading-none tracking-tighter">
+              Accès Privé
+            </h2>
+            <p className="text-white/60 text-[10px] font-bold tracking-[0.3em] uppercase mb-8">
+              Connectez-vous pour accéder au Premium
+            </p>
+            <Link
+              href="/Connexion"
+              className="inline-block bg-white text-stone-800 px-10 py-4 text-xs font-condensed font-black tracking-[0.2em] uppercase hover:bg-stone-100 transition-all shadow-lg"
+            >
+              Se connecter
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />

@@ -7,10 +7,6 @@ export const metadata = {
   description: "Une interface claire et moderne pour vous accompagner au quotidien.",
 };
 
-export const viewport = {
-  viewportFit: "cover",
-};
-
 export default function RootLayout({ children }) {
   return (
     <html lang="fr">

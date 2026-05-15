@@ -28,64 +28,80 @@ export default function Navbar() {
     setTimeout(() => { window.location.href = "/Connexion"; }, 1200);
   };
 
-  const navItem = (href, Icon, label) => {
+  const NavItem = ({ href, Icon, label }) => {
     const active = pathname === href;
     return (
       <Link
         href={href}
-        className="flex flex-col items-center gap-1 group transition-all hover:scale-110 shrink-0"
+        aria-label={label}
+        className="relative flex flex-col items-center justify-center gap-[5px] shrink-0 w-[60px] sm:w-[68px] py-2.5 rounded-2xl group transition-transform duration-200 hover:scale-105 active:scale-95"
       >
-        <div className={`transition-colors ${active ? "text-black" : "text-slate-400 group-hover:text-black"}`}>
-          <Icon size={20} />
-        </div>
-        <span className={`text-[11px] sm:text-xs font-black uppercase tracking-wide transition-colors ${active ? "text-black" : "text-slate-400 group-hover:text-black"}`}>
+        {active && (
+          <span className="absolute inset-0 rounded-2xl liquid-glass-bubble animate-bubble-pop" />
+        )}
+        <Icon
+          size={23}
+          strokeWidth={active ? 2.3 : 2}
+          className={`relative z-10 transition-colors duration-200 ${
+            active ? "text-zinc-900" : "text-zinc-600 group-hover:text-zinc-900"
+          }`}
+        />
+        <span
+          className={`relative z-10 text-[10px] font-extrabold uppercase tracking-[0.08em] leading-none transition-colors duration-200 ${
+            active ? "text-zinc-900" : "text-zinc-600 group-hover:text-zinc-900"
+          }`}
+        >
           {label}
         </span>
-        {active && <span className="w-1 h-1 rounded-full bg-black" />}
       </Link>
     );
   };
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] w-[95%] sm:w-auto flex justify-center">
-      <nav className="flex items-center gap-5 sm:gap-8 rounded-full border border-white/20 bg-white/70 px-6 sm:px-10 py-3 shadow-2xl backdrop-blur-xl max-w-full overflow-x-auto no-scrollbar">
-        {/* Logo + Accueil */}
+    <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[9999]">
+      <nav className="liquid-glass relative flex items-center rounded-[22px] px-2.5 py-2 max-w-[92vw] overflow-x-auto no-scrollbar gap-0.5">
+
+        {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2 sm:gap-3 group transition-all hover:scale-105 shrink-0"
+          aria-label="Accueil"
+          className="relative flex items-center justify-center w-11 h-11 shrink-0 rounded-xl overflow-hidden transition-transform duration-200 hover:scale-105 active:scale-95 mr-1"
         >
-          <div className="relative w-10 h-10 sm:w-12 sm:h-12 overflow-hidden rounded-full border border-black/5 shadow-sm">
+          {pathname === "/" && (
+            <span className="absolute inset-0 rounded-xl liquid-glass-bubble animate-bubble-pop" />
+          )}
+          <div className="relative z-10 w-full h-full">
             <Image src="/Logo-weathora.png" alt="Weathora" fill className="object-cover" priority />
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <div className={pathname === "/" ? "text-black" : "text-slate-400 group-hover:text-black"}>
-              <Home size={20} />
-            </div>
-            <span className={`text-[11px] sm:text-xs font-black uppercase tracking-wide transition-colors ${pathname === "/" ? "text-black" : "text-slate-400 group-hover:text-black"}`}>
-              Accueil
-            </span>
-            {pathname === "/" && <span className="w-1 h-1 rounded-full bg-black" />}
           </div>
         </Link>
 
-        {!user && navItem("/Inscription", UserPlus, "Inscription")}
-        {!user && navItem("/Connexion", LogIn, "Connexion")}
-        {navItem("/Favoris", Heart, "Favoris")}
-        {navItem("/premium", Crown, "Premium")}
-        {user && navItem("/profil", User, "Profil")}
+        {/* Séparateur */}
+        <div className="w-px h-7 bg-black/10 shrink-0 mx-1.5" />
+
+        {!user && <NavItem href="/Inscription" Icon={UserPlus} label="Rejoindre" />}
+        {!user && <NavItem href="/Connexion" Icon={LogIn} label="Connexion" />}
+        <NavItem href="/Favoris" Icon={Heart} label="Favoris" />
+        <NavItem href="/premium" Icon={Crown} label="Premium" />
+        {user && <NavItem href="/profil" Icon={User} label="Profil" />}
 
         {user && (
-          <button
-            onClick={handleLogout}
-            className="flex flex-col items-center gap-1 group transition-all hover:scale-110 shrink-0"
-          >
-            <div className="text-slate-400 group-hover:text-red-500 transition-colors">
-              <LogOut size={20} />
-            </div>
-            <span className="text-[11px] sm:text-xs font-black uppercase tracking-wide text-slate-400 group-hover:text-red-500">
-              Quitter
-            </span>
-          </button>
+          <>
+            <div className="w-px h-7 bg-black/10 shrink-0 mx-1.5" />
+            <button
+              onClick={handleLogout}
+              aria-label="Se déconnecter"
+              className="relative flex flex-col items-center justify-center gap-[5px] shrink-0 w-[60px] sm:w-[68px] py-2.5 rounded-2xl group transition-transform duration-200 hover:scale-105 active:scale-95"
+            >
+              <LogOut
+                size={23}
+                strokeWidth={2}
+                className="text-zinc-600 group-hover:text-red-500 transition-colors duration-200"
+              />
+              <span className="text-[10px] font-extrabold uppercase tracking-[0.08em] leading-none text-zinc-600 group-hover:text-red-500 transition-colors duration-200">
+                Quitter
+              </span>
+            </button>
+          </>
         )}
       </nav>
     </div>

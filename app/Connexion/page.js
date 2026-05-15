@@ -37,9 +37,8 @@ export default function Connexion() {
         <div className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-2 pt-24 lg:pt-40">
           {/* GAUCHE */}
           <div className="flex flex-col justify-start p-8 mt-13 lg:p-16 lg:pl-24">
-            <h1 className="font-condensed text-[12vw] sm:text-[80px] lg:text-[110px] xl:text-[130px] font-black text-white uppercase leading-[0.8] tracking-wide">
-              <span className="sm:hidden">CONNEXION</span>
-              <span className="hidden sm:block">CON-<br />NEXION</span>
+            <h1 className="font-condensed text-[11vw] sm:text-[80px] lg:text-[110px] xl:text-[130px] font-black text-white uppercase leading-[0.85] tracking-wide whitespace-nowrap">
+              CONNEXION
             </h1>
             <div className="flex items-center gap-3 mt-5">
               <div className="h-px w-10 bg-white/30" />
@@ -64,7 +63,7 @@ export default function Connexion() {
                   { label: "Mot de passe",value: password, set: setPassword, type: "password", ph: "••••••••" },
                 ].map(({ label, value, set, type, ph }) => (
                   <div key={label}>
-                    <label className="block text-[9px] lg:text-[11px] font-bold tracking-[0.3em] uppercase text-white/40 mb-2">
+                    <label className="block text-[10px] lg:text-[12px] font-extrabold tracking-[0.3em] uppercase text-white mb-2.5">
                       {label}
                     </label>
                     <input
@@ -72,7 +71,7 @@ export default function Connexion() {
                       value={value}
                       onChange={(e) => set(e.target.value)}
                       placeholder={ph}
-                      className="w-full px-0 py-3 lg:py-4 bg-transparent border-b border-white/20 focus:border-white focus:outline-none text-white placeholder-white/20 text-sm lg:text-base transition-all"
+                      className="w-full px-0 py-3 lg:py-4 bg-transparent border-b-2 border-white/40 focus:border-white focus:outline-none text-white placeholder-white/50 text-sm lg:text-base font-medium transition-all"
                       required
                     />
                   </div>
