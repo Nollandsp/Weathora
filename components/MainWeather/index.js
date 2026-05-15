@@ -301,7 +301,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
 
               {/* Suggestions React */}
               {showSuggestions && suggestions.length > 0 && (
-                <ul className="absolute z-[9998] top-full left-0 right-0 mt-2 rounded-xl bg-black/95 border border-white/20 shadow-2xl overflow-y-auto max-h-[min(220px,35vh)] animate-fade-in">
+                <ul className="absolute z-50 top-full left-0 right-0 mt-2 rounded-xl bg-black/95 border border-white/20 shadow-2xl overflow-hidden animate-fade-in">
                   {suggestions.map((commune, i) => (
                     <li
                       key={i}
