@@ -14,7 +14,7 @@ export default function Home() {
   const [coords, setCoords] = useState(null);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#A8A498]">
       <div className="relative">
         <Navbar />
         <MainWeather setFullCityName={setFullCityName} setCoords={setCoords} />
