@@ -200,12 +200,10 @@
   html {
     @apply font-sans;
     overscroll-behavior: none;
-    background-color: #A8A498;
   }
   body {
     @apply text-foreground;
     overflow-x: hidden;
     overscroll-behavior: none;
-    background-color: #A8A498;
   }
 }

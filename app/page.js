@@ -14,13 +14,13 @@ export default function Home() {
   const [coords, setCoords] = useState(null);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#A8A498]">
+    <div className="min-h-screen flex flex-col">
       <div className="relative">
         <Navbar />
         <MainWeather setFullCityName={setFullCityName} setCoords={setCoords} />
       </div>
 
-      <main className="flex-grow bg-white">
+      <main className="flex-grow">
         {coords && (
           <section className="px-6 md:px-12 lg:px-24 py-12 bg-white">
             <div className="max-w-6xl mx-auto">
