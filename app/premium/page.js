@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Crown, Heart, Map, Check, ArrowRight, Sparkles } from "lucide-react";
+import { Crown, Heart, Map, Check, ArrowRight, Sparkles, Zap, Bell, Wind, Activity } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
 
@@ -11,16 +11,44 @@ const features = [
   {
     icon: Heart,
     title: "Favoris illimités",
-    desc: "Sauvegardez autant de villes que vous voulez. Plus de limite à 3.",
+    desc: "Sauvegardez autant de villes que vous voulez.",
     free: "3 villes max",
     premium: "Illimité",
   },
   {
     icon: Map,
     title: "Cartes radar",
-    desc: "Visualisez les précipitations, nuages et températures en temps réel sur une carte interactive.",
+    desc: "Précipitations, nuages et températures en temps réel sur carte interactive.",
     free: "Non disponible",
     premium: "Inclus",
+  },
+  {
+    icon: Activity,
+    title: "Qualité de l'air détaillée",
+    desc: "Polluants PM2.5, CO, NO₂, O₃ avec historique 7 jours.",
+    free: "Indice basique",
+    premium: "Complet",
+  },
+  {
+    icon: Bell,
+    title: "Alertes météo",
+    desc: "Notifications push pour les événements extrêmes dans vos villes favorites.",
+    free: "Non disponible",
+    premium: "Inclus",
+  },
+  {
+    icon: Wind,
+    title: "Prévisions 14 jours",
+    desc: "Étendez vos prévisions jusqu'à deux semaines.",
+    free: "5 jours",
+    premium: "14 jours",
+  },
+  {
+    icon: Zap,
+    title: "Sans publicité",
+    desc: "Une expérience épurée et sans interruption.",
+    free: "Avec pubs",
+    premium: "Sans pub",
   },
 ];
 
@@ -35,24 +63,25 @@ export default function Premium() {
     });
   }, []);
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div className="min-h-screen ios-sky-clear-night flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!user) {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: "#A8A498" }}>
-          <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[4px] p-12 max-w-lg w-full text-center shadow-2xl">
-            <h2 className="font-condensed text-5xl font-black text-white uppercase mb-4 leading-none tracking-tighter">
-              Accès Privé
-            </h2>
-            <p className="text-white/60 text-[10px] font-bold tracking-[0.3em] uppercase mb-8">
-              Connectez-vous pour accéder au Premium
-            </p>
-            <Link
-              href="/Connexion"
-              className="inline-block bg-white text-stone-800 px-10 py-4 text-xs font-condensed font-black tracking-[0.2em] uppercase hover:bg-stone-100 transition-all shadow-lg"
-            >
+        <div className="min-h-screen ios-sky-clear-night flex items-center justify-center p-6">
+          <div className="ios-glass rounded-[28px] p-10 max-w-sm w-full text-center animate-ios-appear">
+            <Crown size={40} className="text-yellow-300/70 mx-auto mb-6" />
+            <h2 className="text-2xl font-semibold text-white mb-2">Accès privé</h2>
+            <p className="text-white/50 text-sm mb-8">Connectez-vous pour accéder au Premium</p>
+            <Link href="/Connexion"
+              className="block w-full bg-white text-gray-900 font-semibold py-3 rounded-2xl text-sm hover:bg-white/90 transition-all">
               Se connecter
             </Link>
           </div>
@@ -64,127 +93,110 @@ export default function Premium() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen relative overflow-hidden flex flex-col" style={{ backgroundColor: "#A8A498" }}>
+      <div className="min-h-screen ios-sky-clear-night flex flex-col">
 
-        {/* Filigrane */}
-        <div className="font-condensed absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[14rem] font-black text-white/5 pointer-events-none select-none uppercase leading-none whitespace-nowrap">
-          PREMIUM
-        </div>
+        <div className="pt-24 md:pt-28 pb-8 px-5 md:px-8 lg:px-16 flex flex-col items-center">
 
-        <div className="relative z-10 flex-1 flex flex-col pt-36 pb-16 px-6 md:px-16 lg:px-24">
-
-          {/* Header éditorial */}
-          <div className="mb-16">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-px w-10 bg-white/30" />
-              <span className="text-white/50 text-xs font-bold tracking-[0.3em] uppercase">
-                Weathora — Accès exclusif
-              </span>
-            </div>
-            <h1 className="font-condensed text-[80px] md:text-[120px] lg:text-[150px] font-black text-white uppercase leading-none tracking-tight">
-              PASSE
-              <br />
-              PREMIUM
-            </h1>
+          {/* Badge */}
+          <div className="mt-4 mb-6 animate-ios-appear">
+            <span className="ios-glass rounded-full px-4 py-1.5 flex items-center gap-2 text-yellow-300/80 text-xs font-semibold">
+              <Sparkles size={13} />
+              Accès exclusif Weathora
+            </span>
           </div>
 
-          {/* Carte unique premium */}
-          <div className="max-w-lg w-full mx-auto lg:mx-0">
-            <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-[4px] overflow-hidden">
+          {/* Titre */}
+          <div className="text-center mb-10 animate-ios-appear" style={{ animationDelay: "0.05s" }}>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white tracking-tight leading-tight">
+              Passez à<br />
+              <span className="text-yellow-300">Premium</span>
+            </h1>
+            <p className="text-white/50 text-base mt-3 max-w-md mx-auto">
+              Débloquez toutes les fonctionnalités pour une météo sans limites.
+            </p>
+          </div>
 
-              {/* Accent gradient */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
-
-              {/* Badge populaire */}
-              <div className="absolute top-6 right-6">
-                <span className="flex items-center gap-1.5 bg-white text-stone-800 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
-                  <Sparkles size={10} />
-                  Meilleur choix
-                </span>
-              </div>
-
-              <div className="relative z-10 p-8 md:p-10">
-
-                {/* Icône + titre */}
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
-                    <Crown size={18} className="text-white" />
+          {/* Cards grille features */}
+          <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 animate-ios-appear" style={{ animationDelay: "0.1s" }}>
+            {features.map(({ icon: Icon, title, desc, free, premium }) => (
+              <div key={title} className="ios-glass rounded-[20px] p-4 flex gap-3">
+                <div className="w-8 h-8 ios-glass-dark rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+                  <Icon size={15} className="text-white/70" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white leading-tight">{title}</p>
+                  <p className="text-xs text-white/50 mt-0.5 leading-snug">{desc}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-[10px] text-white/30 line-through">{free}</span>
+                    <span className="text-[10px] font-semibold text-yellow-300 bg-yellow-300/10 px-2 py-0.5 rounded-full">{premium}</span>
                   </div>
-                  <p className="font-condensed text-white/60 text-[11px] font-black uppercase tracking-[0.3em]">
-                    Plan Premium
-                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pricing card */}
+          <div className="w-full max-w-sm animate-ios-appear" style={{ animationDelay: "0.15s" }}>
+            <div className="ios-glass rounded-[28px] p-7 text-center relative overflow-hidden">
+              {/* Glow décoratif */}
+              <div className="absolute inset-0 bg-gradient-to-b from-yellow-400/8 to-transparent pointer-events-none rounded-[28px]" />
+
+              <div className="relative z-10">
+                {/* Couronne */}
+                <div className="w-14 h-14 ios-glass-dark rounded-[16px] flex items-center justify-center mx-auto mb-5">
+                  <Crown size={26} className="text-yellow-300" />
                 </div>
 
                 {/* Prix */}
-                <div className="mb-8 border-b border-white/10 pb-8">
-                  <div className="flex items-end gap-2">
-                    <span className="font-condensed text-[80px] font-black text-white leading-none">
-                      4,99
-                    </span>
-                    <div className="flex flex-col pb-3">
-                      <span className="font-condensed text-2xl font-black text-white">€</span>
-                      <span className="text-white/50 text-xs font-bold uppercase tracking-widest">/ mois</span>
-                    </div>
-                  </div>
-                  <p className="text-white/50 text-xs font-bold uppercase tracking-wider mt-2">
-                    Sans engagement — annulable à tout moment
-                  </p>
+                <div className="mb-1">
+                  <span className="text-5xl font-thin text-white">4</span>
+                  <span className="text-5xl font-thin text-white">,</span>
+                  <span className="text-5xl font-thin text-white">99</span>
+                  <span className="text-2xl font-light text-white/60"> €</span>
                 </div>
+                <p className="text-white/40 text-xs font-medium mb-6">par mois · sans engagement</p>
 
-                {/* Features */}
-                <ul className="space-y-5 mb-10">
-                  {features.map(({ icon: Icon, title, desc, premium }) => (
-                    <li key={title} className="flex items-start gap-4">
-                      <div className="mt-0.5 w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
-                        <Check size={12} className="text-white" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <Icon size={13} className="text-white/70" />
-                          <p className="font-condensed text-white font-black text-base uppercase tracking-wide">
-                            {title}
-                          </p>
-                        </div>
-                        <p className="text-white/50 text-xs leading-relaxed">{desc}</p>
-                        <span className="inline-block mt-1.5 text-[9px] font-black uppercase tracking-widest text-white/40 border border-white/10 px-2 py-0.5 rounded-full">
-                          Gratuit&nbsp;: {features.find(f => f.title === title)?.free}
-                        </span>
-                      </div>
+                {/* Checklist compacte */}
+                <ul className="text-left space-y-2 mb-7">
+                  {features.slice(0, 4).map(({ title }) => (
+                    <li key={title} className="flex items-center gap-2.5 text-sm text-white/70">
+                      <Check size={14} className="text-yellow-300 shrink-0" />
+                      {title}
                     </li>
                   ))}
+                  <li className="flex items-center gap-2.5 text-sm text-white/40">
+                    <Check size={14} className="text-white/20 shrink-0" />
+                    Et bien plus...
+                  </li>
                 </ul>
 
                 {/* CTA */}
                 <button
-                  className="group relative w-full overflow-hidden bg-white text-stone-900 py-4 font-condensed font-black text-base uppercase tracking-[0.2em] transition-all hover:bg-stone-100 active:scale-[0.98]"
                   onClick={() => alert("Paiement bientôt disponible !")}
+                  className="group w-full bg-white text-gray-900 font-semibold py-3.5 rounded-2xl text-sm hover:bg-yellow-50 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
-                  <span className="flex items-center justify-center gap-2">
-                    Commencer maintenant
-                    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                  </span>
+                  Commencer maintenant
+                  <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
                 </button>
 
-                <p className="text-center text-white/30 text-[10px] font-bold uppercase tracking-widest mt-4">
-                  Paiement sécurisé · Sans engagement
+                <p className="text-white/25 text-[11px] font-medium mt-4">
+                  Paiement sécurisé · Annulable à tout moment
                 </p>
               </div>
             </div>
 
             {/* Lien retour */}
-            <div className="mt-8 text-center">
-              <Link
-                href="/"
-                className="text-white/40 hover:text-white text-[11px] font-bold uppercase tracking-widest transition-colors"
-              >
+            <div className="mt-6 text-center">
+              <Link href="/" className="text-white/30 hover:text-white/60 text-xs font-medium transition-colors">
                 ← Continuer gratuitement
               </Link>
             </div>
           </div>
-
         </div>
+
+        <div className="flex-1" />
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 }

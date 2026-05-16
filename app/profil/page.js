@@ -11,6 +11,30 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { User, Mail, Lock, AlertTriangle, ChevronRight } from "lucide-react";
+
+function SectionCard({ icon: Icon, title, children }) {
+  return (
+    <div className="ios-glass rounded-[24px] overflow-hidden">
+      <div className="flex items-center gap-2.5 px-5 py-4 border-b border-white/10">
+        {Icon && <Icon size={14} className="text-white/50" />}
+        <span className="text-[11px] font-semibold uppercase tracking-widest text-white/50">{title}</span>
+      </div>
+      <div className="p-5">{children}</div>
+    </div>
+  );
+}
+
+function Field({ label, children }) {
+  return (
+    <div className="mb-4 last:mb-0">
+      <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+const inputCls = "w-full ios-glass-dark rounded-2xl px-4 py-3 text-white text-sm font-medium outline-none border border-transparent focus:border-white/30 transition-all placeholder-white/30";
 
 export default function Profil() {
   const [user, setUser] = useState(null);
@@ -25,13 +49,8 @@ export default function Profil() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setUser(user);
-        setName(user.user_metadata?.full_name || "");
-        setEmail(user.email || "");
-      } else {
-        router.push("/Connexion");
-      }
+      if (user) { setUser(user); setName(user.user_metadata?.full_name || ""); setEmail(user.email || ""); }
+      else router.push("/Connexion");
       setLoading(false);
     }).catch(() => { router.push("/Connexion"); setLoading(false); });
   }, [router]);
@@ -44,7 +63,7 @@ export default function Profil() {
     if (authError) { toast.error(authError.message); setSaving(false); return; }
     const { error: dbError } = await supabase.from("profiles").update({ pseudo: name }).eq("id", user.id);
     if (dbError) toast.error(dbError.message);
-    else toast.success("Pseudo modifié avec succès");
+    else toast.success("Pseudo mis à jour !");
     setSaving(false);
   };
 
@@ -61,7 +80,7 @@ export default function Profil() {
     if (newPassword !== confirmPassword) { toast.error("Les mots de passe ne correspondent pas"); setSaving(false); return; }
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) toast.error(error.message);
-    else { toast.success("Mot de passe modifié avec succès"); setNewPassword(""); setConfirmPassword(""); }
+    else { toast.success("Mot de passe modifié !"); setNewPassword(""); setConfirmPassword(""); }
     setSaving(false);
   };
 
@@ -74,25 +93,17 @@ export default function Profil() {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
     });
     const data = await res.json();
-    if (!res.ok) {
-      toast.error("Erreur : " + (data.error || "Erreur inconnue"));
-    } else {
-      await supabase.auth.signOut();
-      setShowDeleteModal(false);
-      router.push("/");
-    }
+    if (!res.ok) { toast.error("Erreur : " + (data.error || "Erreur inconnue")); }
+    else { await supabase.auth.signOut(); setShowDeleteModal(false); router.push("/"); }
     setSaving(false);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ backgroundColor: "#A8A498" }}>
-        <div className="font-condensed absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] font-black text-white/5 pointer-events-none select-none uppercase leading-none animate-pulse">
-          WEATHORA
-        </div>
-        <div className="relative z-10 flex flex-col items-center gap-6">
-          <div className="w-12 h-12 border-[2px] border-white/10 border-t-white rounded-full animate-spin" />
-          <p className="font-condensed text-white text-[12px] font-black tracking-[0.4em] uppercase">Initialisation</p>
+      <div className="min-h-screen ios-sky-default flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+          <p className="text-white/50 text-sm font-medium">Chargement...</p>
         </div>
       </div>
     );
@@ -100,142 +111,112 @@ export default function Profil() {
 
   if (!user) return null;
 
-  const inputClass = "w-full bg-white/5 border border-white/10 px-4 py-3 text-white text-sm focus:outline-none focus:border-white/40 transition-colors";
-  const labelClass = "block font-condensed text-[11px] font-black text-white uppercase tracking-widest mb-2";
-  const cardClass = "bg-white/10 backdrop-blur-md border border-white/15 p-8 rounded-[4px] group transition-all hover:border-white/30 flex flex-col";
-
   return (
     <>
       <Navbar />
-      <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: "#A8A498" }}>
-        <div className="font-condensed absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] sm:text-[16vw] md:text-[14vw] lg:text-[12rem] font-black text-white/5 pointer-events-none select-none uppercase leading-none">
-          PROFIL
-        </div>
+      <div className="min-h-screen ios-sky-default flex flex-col">
+        <div className="pt-24 md:pt-28 pb-4 px-5 md:px-8 lg:px-16">
 
-        <div className="relative z-10 pt-32 pb-12">
-          <div className="container mx-auto px-8">
-            <div className="max-w-5xl mx-auto">
-              {/* Header */}
-              <div className="mb-12 text-left">
-                <h1 className="font-condensed text-[60px] md:text-[100px] font-black text-white uppercase leading-none tracking-tight">
-                  MON PROFIL
-                </h1>
-                <p className="text-white/50 text-xs font-bold tracking-[0.3em] uppercase mt-2">
-                  GESTION DU COMPTE — PARAMÈTRES PERSONNELS
-                </p>
+          {/* Header */}
+          <div className="mb-6 animate-ios-appear">
+            <div className="w-16 h-16 ios-glass rounded-[18px] flex items-center justify-center mb-4">
+              <User size={28} className="text-white/70" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-semibold text-white tracking-tight">Mon profil</h1>
+            <p className="text-white/40 text-sm mt-1">{user.email}</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl animate-ios-appear" style={{ animationDelay: "0.05s" }}>
+
+            {/* Pseudo */}
+            <SectionCard icon={User} title="Identifiant">
+              <form onSubmit={updateName}>
+                <Field label="Nom d'utilisateur">
+                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={inputCls} placeholder="Votre pseudo" />
+                </Field>
+                <button type="submit" disabled={saving}
+                  className="w-full bg-white/15 hover:bg-white/25 text-white font-semibold py-2.5 rounded-2xl text-sm transition-all disabled:opacity-50">
+                  Enregistrer
+                </button>
+              </form>
+            </SectionCard>
+
+            {/* Email */}
+            <SectionCard icon={Mail} title="Email">
+              <form onSubmit={updateEmail}>
+                <Field label="Adresse électronique">
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} />
+                </Field>
+                <button type="submit" disabled={saving}
+                  className="w-full bg-white/15 hover:bg-white/25 text-white font-semibold py-2.5 rounded-2xl text-sm transition-all disabled:opacity-50">
+                  Mettre à jour
+                </button>
+              </form>
+            </SectionCard>
+
+            {/* Mot de passe */}
+            <SectionCard icon={Lock} title="Sécurité">
+              <form onSubmit={updatePassword} className="space-y-3">
+                <Field label="Nouveau mot de passe">
+                  <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className={inputCls} placeholder="Min. 8 caractères" />
+                </Field>
+                <Field label="Confirmation">
+                  <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className={inputCls} placeholder="••••••••" />
+                </Field>
+                <button type="submit" disabled={saving}
+                  className="w-full bg-white/15 hover:bg-white/25 text-white font-semibold py-2.5 rounded-2xl text-sm transition-all disabled:opacity-50">
+                  Changer le mot de passe
+                </button>
+              </form>
+            </SectionCard>
+
+            {/* Zone dangereuse */}
+            <div className="ios-glass rounded-[24px] overflow-hidden border border-red-500/20">
+              <div className="flex items-center gap-2.5 px-5 py-4 border-b border-red-500/20">
+                <AlertTriangle size={14} className="text-red-400/70" />
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-red-400/70">Zone critique</span>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Pseudo */}
-                <div className={cardClass}>
-                  <p className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase mb-6">IDENTIFIANT</p>
-                  <form onSubmit={updateName} className="space-y-6 flex-1 flex flex-col justify-between">
-                    <div>
-                      <label className={labelClass}>Nom d'utilisateur</label>
-                      <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={inputClass + " uppercase"} />
-                    </div>
-                    <Button type="submit" disabled={saving} className="font-condensed w-full py-3 text-[13px] font-black tracking-[0.1em] uppercase rounded-none">
-                      Enregistrer les modifications
-                    </Button>
-                  </form>
-                </div>
-
-                {/* Email */}
-                <div className={cardClass}>
-                  <p className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase mb-6">COORDONNÉES</p>
-                  <form onSubmit={updateEmail} className="space-y-6 flex-1 flex flex-col justify-between">
-                    <div>
-                      <label className={labelClass}>Adresse électronique</label>
-                      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
-                    </div>
-                    <Button type="submit" disabled={saving} className="font-condensed w-full py-3 text-[13px] font-black tracking-[0.1em] uppercase rounded-none">
-                      Mettre à jour l'email
-                    </Button>
-                  </form>
-                </div>
-
-                {/* Mot de passe */}
-                <div className={cardClass}>
-                  <p className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase mb-6">SÉCURITÉ</p>
-                  <form onSubmit={updatePassword} className="space-y-4 flex-1 flex flex-col justify-between">
-                    <div className="space-y-4">
-                      <div>
-                        <label className={labelClass}>Nouveau mot de passe</label>
-                        <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className={inputClass} />
-                      </div>
-                      <div>
-                        <label className={labelClass}>Confirmation</label>
-                        <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className={inputClass} />
-                      </div>
-                    </div>
-                    <Button type="submit" disabled={saving} className="font-condensed w-full py-3 text-[13px] font-black tracking-[0.1em] uppercase rounded-none">
-                      Changer le mot de passe
-                    </Button>
-                  </form>
-                </div>
-
-                {/* Zone dangereuse */}
-                <div className="relative group overflow-hidden bg-stone-900/20 backdrop-blur-md border border-red-900/30 p-8 rounded-[2px] transition-all duration-500 hover:border-red-500/50">
-                  <div className="absolute -inset-px bg-gradient-to-tr from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="h-[1px] w-8 bg-red-500/40" />
-                      <p className="font-condensed text-red-500 text-[10px] font-black tracking-[0.3em] uppercase">Zone de non-retour</p>
-                    </div>
-                    <h2 className="font-condensed text-white text-2xl font-black uppercase leading-none mb-4">
-                      Suppression <span className="text-red-500/80">irréversible</span>
-                    </h2>
-                    <p className="text-white/40 text-[11px] leading-relaxed mb-8 max-w-[280px] font-medium uppercase tracking-wider">
-                      L'effacement de vos données d'accès et de vos préférences est définitif.<br />
-                      Aucune récupération n'est possible.
-                    </p>
-                    <Button
-                      variant="destructive"
-                      onClick={() => setShowDeleteModal(true)}
-                      className="font-condensed w-full py-4 mt-10 text-[13px] font-black tracking-[0.2em] uppercase rounded-none"
-                    >
-                      Détruire le compte
-                    </Button>
-                  </div>
-                </div>
+              <div className="p-5">
+                <p className="text-sm font-semibold text-white mb-1">Supprimer le compte</p>
+                <p className="text-xs text-white/40 mb-5 leading-relaxed">
+                  Cette action est irréversible. Toutes vos données seront définitivement supprimées.
+                </p>
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-300 font-semibold py-2.5 rounded-2xl text-sm transition-all border border-red-500/20"
+                >
+                  Supprimer mon compte
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Dialog de confirmation shadcn */}
-        <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
-          <DialogContent className="bg-[#A8A498] border border-white/20 rounded-[4px] text-white max-w-md">
-            <DialogHeader>
-              <DialogTitle className="font-condensed text-4xl font-black text-white uppercase leading-none">
-                CONFIRMER ?
-              </DialogTitle>
-              <DialogDescription className="text-white/70 text-[11px] font-bold tracking-widest uppercase leading-loose">
-                Cette action est <span className="text-red-400">irréversible</span>. Votre accès au système Weathora sera révoqué immédiatement.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="bg-transparent border-0 gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowDeleteModal(false)}
-                disabled={saving}
-                className="font-condensed flex-1 border-white/20 text-white bg-white/10 hover:bg-white/20 rounded-none uppercase tracking-widest text-xs"
-              >
-                Annuler
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={deleteAccount}
-                disabled={saving}
-                className="font-condensed flex-1 rounded-none uppercase tracking-widest text-xs"
-              >
-                {saving ? "TRAITEMENT..." : "SUPPRIMER"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <div className="flex-1" />
+        <Footer />
       </div>
-      <Footer />
+
+      {/* Dialog confirmation suppression */}
+      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <DialogContent className="ios-glass border-white/20 rounded-[28px] text-white max-w-sm bg-[#1a2f5e]">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-white">Confirmer la suppression</DialogTitle>
+            <DialogDescription className="text-white/60 text-sm">
+              Cette action est <span className="text-red-400 font-semibold">irréversible</span>. Votre accès Weathora sera immédiatement révoqué.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-3 flex-col sm:flex-row">
+            <Button variant="outline" onClick={() => setShowDeleteModal(false)} disabled={saving}
+              className="flex-1 border-white/20 text-white bg-white/10 hover:bg-white/20 rounded-2xl">
+              Annuler
+            </Button>
+            <Button variant="destructive" onClick={deleteAccount} disabled={saving}
+              className="flex-1 rounded-2xl">
+              {saving ? "Traitement..." : "Supprimer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

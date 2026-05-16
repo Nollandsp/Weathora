@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Barlow Condensed", sans-serif;
-  --font-condensed: "Barlow Condensed", sans-serif;
-  --font-heading: "Barlow Condensed", sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-condensed: "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "Inter", system-ui, -apple-system, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,58 +48,189 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ── Icônes météo : animation flottante ── */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-8px); }
+/* ══════════════════════════════════════════════
+   iOS SKY GRADIENTS — Dynamic backgrounds
+   ══════════════════════════════════════════════ */
+
+.ios-sky-clear-day {
+  background: linear-gradient(170deg,
+    #1a6cb5 0%,
+    #2d8fd6 25%,
+    #52aae8 55%,
+    #89cbf5 80%,
+    #b8e2fd 100%
+  );
 }
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+.ios-sky-clear-sunset {
+  background: linear-gradient(170deg,
+    #d4482a 0%,
+    #e8733a 25%,
+    #f59b50 55%,
+    #f9c56a 80%,
+    #fce8a0 100%
+  );
+}
+.ios-sky-clear-night {
+  background: linear-gradient(170deg,
+    #0b1221 0%,
+    #121e3d 25%,
+    #1c2e60 55%,
+    #243888 80%,
+    #1e3070 100%
+  );
+}
+.ios-sky-cloudy {
+  background: linear-gradient(170deg,
+    #4a6070 0%,
+    #607888 25%,
+    #7a90a0 55%,
+    #98aeba 80%,
+    #b5c8d5 100%
+  );
+}
+.ios-sky-rain {
+  background: linear-gradient(170deg,
+    #2a3d50 0%,
+    #3a5265 25%,
+    #4e6878 55%,
+    #637e90 80%,
+    #7895a5 100%
+  );
+}
+.ios-sky-drizzle {
+  background: linear-gradient(170deg,
+    #384e60 0%,
+    #4a6275 25%,
+    #5e7888 55%,
+    #738e9e 80%,
+    #8aa4b4 100%
+  );
+}
+.ios-sky-thunder {
+  background: linear-gradient(170deg,
+    #12101e 0%,
+    #1e1a3a 25%,
+    #2e2558 55%,
+    #3d3070 80%,
+    #2a2450 100%
+  );
+}
+.ios-sky-snow {
+  background: linear-gradient(170deg,
+    #7a9eba 0%,
+    #96b8d0 25%,
+    #aecce0 55%,
+    #c4dded 80%,
+    #d8edf8 100%
+  );
+}
+.ios-sky-mist {
+  background: linear-gradient(170deg,
+    #5a7080 0%,
+    #728898 25%,
+    #8aa0ae 55%,
+    #a0b4c0 80%,
+    #b8c8d4 100%
+  );
+}
+.ios-sky-default {
+  background: linear-gradient(170deg,
+    #1e3a5f 0%,
+    #2d5282 25%,
+    #3d6ea8 55%,
+    #5084c0 80%,
+    #6898d4 100%
+  );
 }
 
-/* ── Skeleton pulse ── */
-@keyframes shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position:  400px 0; }
-}
-.skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 800px 100%;
-  animation: shimmer 1.4s infinite;
+/* ══════════════════════════════════════════════
+   iOS GLASS EFFECTS
+   ══════════════════════════════════════════════ */
+
+/* Main glass — pour les widgets */
+.ios-glass {
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  border: 0.5px solid rgba(255, 255, 255, 0.28);
 }
 
-/* ── Liquid Glass - iOS 26 ── */
+/* Glass sombre — sur fonds très clairs */
+.ios-glass-dark {
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  border: 0.5px solid rgba(255, 255, 255, 0.14);
+}
+
+/* Navbar pill — bureau */
 .liquid-glass {
-  background:
-    linear-gradient(175deg,
-      rgba(255, 255, 255, 0.55) 0%,
-      rgba(255, 255, 255, 0.18) 40%,
-      rgba(255, 255, 255, 0.28) 100%
-    );
-  backdrop-filter: blur(64px) saturate(300%) brightness(1.1);
-  -webkit-backdrop-filter: blur(64px) saturate(300%) brightness(1.1);
-  border: 0.5px solid rgba(255, 255, 255, 0.8);
+  background: linear-gradient(170deg,
+    rgba(255, 255, 255, 0.60) 0%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+  backdrop-filter: blur(64px) saturate(300%) brightness(1.08);
+  -webkit-backdrop-filter: blur(64px) saturate(300%) brightness(1.08);
+  border: 0.5px solid rgba(255, 255, 255, 0.85);
   border-top-color: rgba(255, 255, 255, 0.98);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
-    0 32px 80px rgba(0, 0, 0, 0.20),
-    0 12px 32px rgba(0, 0, 0, 0.14),
-    0 4px 12px rgba(0, 0, 0, 0.08);
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05),
+    0 24px 64px rgba(0, 0, 0, 0.18),
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 3px 8px rgba(0, 0, 0, 0.07);
 }
 
+/* Active pill bubble */
 .liquid-glass-bubble {
-  background: linear-gradient(
-    170deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    rgba(255, 255, 255, 0.60) 100%
+  background: linear-gradient(160deg,
+    rgba(255, 255, 255, 0.94) 0%,
+    rgba(255, 255, 255, 0.65) 100%
   );
   border: 0.5px solid rgba(255, 255, 255, 0.98);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.04),
-    0 6px 20px rgba(0, 0, 0, 0.10),
-    0 2px 6px rgba(0, 0, 0, 0.07);
+    0 4px 16px rgba(0, 0, 0, 0.09),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* iOS bottom tab bar */
+.ios-tab-bar {
+  background: rgba(22, 22, 26, 0.88);
+  backdrop-filter: blur(48px) saturate(200%);
+  -webkit-backdrop-filter: blur(48px) saturate(200%);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.10);
+}
+
+/* ══════════════════════════════════════════════
+   ANIMATIONS
+   ══════════════════════════════════════════════ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+.animate-float { animation: float 4s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.06) 25%,
+    rgba(255,255,255,0.15) 50%,
+    rgba(255,255,255,0.06) 75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.8s infinite;
+}
+.skeleton-light {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite;
 }
 
 @keyframes bubble-pop {
@@ -111,11 +242,6 @@
   animation: bubble-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* ── Scrollbar hide ── */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* ── Suggestions dropdown ── */
 @keyframes fade-in {
   from { opacity: 0; transform: scale(0.97) translateY(-4px); }
   to   { opacity: 1; transform: scale(1)    translateY(0);    }
@@ -123,6 +249,33 @@
 .animate-fade-in {
   animation: fade-in 0.15s ease-out forwards;
 }
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes ios-appear {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+.animate-ios-appear {
+  animation: ios-appear 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ══════════════════════════════════════════════
+   UTILITIES
+   ══════════════════════════════════════════════ */
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ══════════════════════════════════════════════
+   SHADCN TOKENS
+   ══════════════════════════════════════════════ */
 
 :root {
   --background: oklch(1 0 0);
@@ -143,12 +296,12 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -178,11 +331,11 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -200,10 +353,14 @@
   html {
     @apply font-sans;
     overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
     @apply text-foreground;
     overflow-x: hidden;
     overscroll-behavior: none;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }

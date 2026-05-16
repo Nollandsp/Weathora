@@ -7,6 +7,12 @@ export const metadata = {
   description: "Une interface claire et moderne pour vous accompagner au quotidien.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="fr">
@@ -14,12 +20,14 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,400&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
+        <meta name="theme-color" content="#1a6cb5" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="relative min-h-screen" style={{ fontFamily: "Barlow Condensed, sans-serif" }}>
-        <div className="background-design fixed inset-0 -z-10" />
+      <body className="relative min-h-screen">
         <div className="relative z-10">{children}</div>
         <Toaster richColors position="top-center" />
       </body>
