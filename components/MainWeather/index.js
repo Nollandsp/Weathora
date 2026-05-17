@@ -285,7 +285,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
       }, 1500);
       return;
     }
-    const city = inputRef.current?.value.trim();
+    const city = cityName || inputRef.current?.value.trim();
     if (!city) return;
     if (favorites.length >= 3) {
       toast.error("Maximum 3 favoris.");

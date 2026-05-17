@@ -154,7 +154,7 @@ export default function Favoris() {
                   <button
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(fav.id); }}
                     aria-label="Supprimer"
-                    className="absolute top-4 right-4 z-10 ios-glass rounded-full p-2 text-white/60 hover:text-red-400 transition-colors"
+                    className="absolute top-4 right-4 z-20 ios-glass rounded-full p-2 text-white/60 hover:text-red-400 transition-colors cursor-pointer"
                   >
                     <Trash2 size={14} />
                   </button>
