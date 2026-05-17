@@ -328,7 +328,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
 
   return (
     <main
-      className={`w-full min-h-screen flex flex-col transition-all duration-1000 ${skyClass}`}
+      className={`w-full min-h-screen flex flex-col ${skyClass}`}
     >
       {/* ══ BARRE DE RECHERCHE FLOTTANTE ══ */}
       <div className="fixed top-3 left-1/2 -translate-x-1/2 z-[9998] md:hidden w-[90vw] max-w-sm">
@@ -382,12 +382,15 @@ export default function MainWeather({ setFullCityName, setCoords }) {
               </button>
             </div>
             {showSuggestions && suggestions.length > 0 && (
-              <ul className="absolute top-full left-0 right-0 mt-2 rounded-[14px] ios-glass-dark overflow-hidden animate-fade-in">
+              <ul
+                className="absolute top-full left-0 right-0 mt-2 rounded-[14px] overflow-hidden animate-fade-in z-50"
+                style={{ background: "rgba(8, 18, 42, 0.96)", backdropFilter: "blur(24px)" }}
+              >
                 {suggestions.map((c, i) => (
                   <li
                     key={i}
                     onMouseDown={() => handleSuggestionClick(c)}
-                    className="px-4 py-3 text-white text-sm font-medium cursor-pointer hover:bg-white/10 transition-colors border-b border-white/5 last:border-0 flex items-center justify-between"
+                    className="px-4 py-3 text-white text-sm font-medium cursor-pointer hover:bg-white/8 transition-colors border-b border-white/8 last:border-0 flex items-center justify-between"
                   >
                     {c.nom}
                     <span className="text-white/40 text-xs">
@@ -402,9 +405,10 @@ export default function MainWeather({ setFullCityName, setCoords }) {
       </div>
 
       {/* ══ SECTION PRINCIPALE : météo iOS ══ */}
-      <section className="relative flex flex-col items-center justify-start pt-28 md:pt-36 pb-8 px-5 min-h-[100svh] md:min-h-[auto]">
-        {/* Barre de recherche desktop (au-dessus du pill navbar, invisible sur mobile) */}
-        <div className="hidden md:block absolute top-24 right-8 lg:right-16 z-10">
+      <section className="relative flex flex-col items-center justify-start pt-28 md:pt-32 pb-8 px-5 min-h-[100svh] md:min-h-[auto]">
+
+        {/* Barre de recherche desktop — dans le flux normal, alignée à droite */}
+        <div className="hidden md:flex w-full justify-end mb-6 px-3 lg:px-8">
           <form onSubmit={handleSubmit} className="relative">
             <div className="ios-glass rounded-2xl flex items-center gap-2 px-4 py-3 w-72">
               <Search size={16} className="text-white/50 shrink-0" />
@@ -424,7 +428,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
                 type="button"
                 onClick={handleGeolocate}
                 title="Ma position"
-                className="text-white/50 hover:text-white transition-colors"
+                className="text-white/50 hover:text-white transition-colors cursor-pointer"
               >
                 <LocateFixed
                   size={16}
@@ -433,12 +437,15 @@ export default function MainWeather({ setFullCityName, setCoords }) {
               </button>
             </div>
             {showSuggestions && suggestions.length > 0 && (
-              <ul className="absolute top-full left-0 right-0 mt-2 rounded-2xl ios-glass-dark overflow-hidden animate-fade-in z-50">
+              <ul
+                className="absolute top-full right-0 mt-2 w-72 rounded-2xl overflow-hidden animate-fade-in z-50"
+                style={{ background: "rgba(8, 18, 42, 0.96)", backdropFilter: "blur(24px)" }}
+              >
                 {suggestions.map((c, i) => (
                   <li
                     key={i}
                     onMouseDown={() => handleSuggestionClick(c)}
-                    className="px-4 py-3 text-white text-sm font-medium cursor-pointer hover:bg-white/10 transition-colors border-b border-white/5 last:border-0 flex items-center justify-between"
+                    className="px-4 py-3 text-white text-sm font-medium cursor-pointer hover:bg-white/8 transition-colors border-b border-white/8 last:border-0 flex items-center justify-between"
                   >
                     {c.nom}
                     <span className="text-white/40 text-xs">

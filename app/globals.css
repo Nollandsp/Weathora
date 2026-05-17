@@ -54,11 +54,11 @@
 
 .ios-sky-clear-day {
   background: linear-gradient(170deg,
-    #1a6cb5 0%,
-    #2d8fd6 25%,
-    #52aae8 55%,
-    #89cbf5 80%,
-    #b8e2fd 100%
+    #1255a0 0%,
+    #1c78c8 25%,
+    #2e96e8 55%,
+    #3da8f0 80%,
+    #50b4f8 100%
   );
 }
 .ios-sky-clear-sunset {
@@ -81,11 +81,11 @@
 }
 .ios-sky-cloudy {
   background: linear-gradient(170deg,
-    #4a6070 0%,
-    #607888 25%,
-    #7a90a0 55%,
-    #98aeba 80%,
-    #b5c8d5 100%
+    #3a4e60 0%,
+    #4e6478 25%,
+    #607890 55%,
+    #6e8aa0 80%,
+    #7a98ae 100%
   );
 }
 .ios-sky-rain {
@@ -117,20 +117,20 @@
 }
 .ios-sky-snow {
   background: linear-gradient(170deg,
-    #7a9eba 0%,
-    #96b8d0 25%,
-    #aecce0 55%,
-    #c4dded 80%,
-    #d8edf8 100%
+    #4a7898 0%,
+    #5e92b0 25%,
+    #72a8c8 55%,
+    #82b8d8 80%,
+    #90c4e4 100%
   );
 }
 .ios-sky-mist {
   background: linear-gradient(170deg,
-    #5a7080 0%,
-    #728898 25%,
-    #8aa0ae 55%,
-    #a0b4c0 80%,
-    #b8c8d4 100%
+    #445a68 0%,
+    #587280 25%,
+    #6a8898 55%,
+    #789aa8 80%,
+    #84a8b8 100%
   );
 }
 .ios-sky-default {

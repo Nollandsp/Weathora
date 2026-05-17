@@ -52,12 +52,12 @@ export default function Navbar() {
           size={22}
           strokeWidth={active ? 2.2 : 1.8}
           className={`relative z-10 transition-colors duration-200 ${
-            active ? "text-zinc-900" : "text-zinc-500 group-hover:text-zinc-900"
+            active ? "text-zinc-900" : "text-zinc-700 group-hover:text-zinc-900"
           }`}
         />
         <span
           className={`relative z-10 text-[9px] font-semibold tracking-wide leading-none transition-colors duration-200 ${
-            active ? "text-zinc-900" : "text-zinc-400 group-hover:text-zinc-900"
+            active ? "text-zinc-900" : "text-zinc-600 group-hover:text-zinc-900"
           }`}
         >
           {label}
@@ -80,9 +80,9 @@ export default function Navbar() {
       <LogOut
         size={22}
         strokeWidth={1.8}
-        className="text-zinc-400 group-hover:text-red-500 transition-colors duration-200"
+        className="text-zinc-700 group-hover:text-red-500 transition-colors duration-200"
       />
-      <span className="text-[9px] font-semibold tracking-wide leading-none text-zinc-400 group-hover:text-red-500 transition-colors duration-200">
+      <span className="text-[9px] font-semibold tracking-wide leading-none text-zinc-600 group-hover:text-red-500 transition-colors duration-200">
         Quitter
       </span>
     </button>
