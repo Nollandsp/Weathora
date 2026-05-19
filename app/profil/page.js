@@ -57,13 +57,26 @@ export default function Profil() {
 
   const updateName = async (e) => {
     e.preventDefault(); setSaving(true);
+    const trimmed = name.trim();
+    if (trimmed.length < 2) { toast.error("Le pseudo doit contenir au moins 2 caractères"); setSaving(false); return; }
+    if (trimmed.length > 30) { toast.error("Le pseudo ne peut pas dépasser 30 caractères"); setSaving(false); return; }
+    if (!/^[a-zA-ZÀ-ÿ0-9_\-]+$/.test(trimmed)) { toast.error("Le pseudo ne peut contenir que des lettres, chiffres, - et _"); setSaving(false); return; }
+
+    const checkRes = await fetch("/api/check-pseudo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pseudo: trimmed }),
+    });
+    const { taken } = await checkRes.json();
+    if (taken) { toast.error("Ce pseudo est déjà utilisé, choisis-en un autre."); setSaving(false); return; }
+
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) { toast.error("Utilisateur non connecté"); setSaving(false); return; }
-    const { error: authError } = await supabase.auth.updateUser({ data: { full_name: name } });
+    const { error: authError } = await supabase.auth.updateUser({ data: { full_name: trimmed } });
     if (authError) { toast.error(authError.message); setSaving(false); return; }
-    const { error: dbError } = await supabase.from("profiles").update({ pseudo: name }).eq("id", user.id);
+    const { error: dbError } = await supabase.from("profiles").update({ pseudo: trimmed }).eq("id", user.id);
     if (dbError) toast.error(dbError.message);
-    else toast.success("Pseudo mis à jour !");
+    else { setName(trimmed); toast.success("Pseudo mis à jour !"); }
     setSaving(false);
   };
 
@@ -77,6 +90,11 @@ export default function Profil() {
 
   const updatePassword = async (e) => {
     e.preventDefault(); setSaving(true);
+    if (newPassword.length < 8) { toast.error("Le mot de passe doit contenir au moins 8 caractères"); setSaving(false); return; }
+    if (!/[A-Z]/.test(newPassword)) { toast.error("Le mot de passe doit contenir au moins une majuscule"); setSaving(false); return; }
+    if (!/[a-z]/.test(newPassword)) { toast.error("Le mot de passe doit contenir au moins une minuscule"); setSaving(false); return; }
+    if (!/[0-9]/.test(newPassword)) { toast.error("Le mot de passe doit contenir au moins un chiffre"); setSaving(false); return; }
+    if (!/[^a-zA-Z0-9]/.test(newPassword)) { toast.error("Le mot de passe doit contenir au moins un caractère spécial (!@#$…)"); setSaving(false); return; }
     if (newPassword !== confirmPassword) { toast.error("Les mots de passe ne correspondent pas"); setSaving(false); return; }
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) toast.error(error.message);
@@ -132,7 +150,7 @@ export default function Profil() {
             <SectionCard icon={User} title="Identifiant">
               <form onSubmit={updateName}>
                 <Field label="Nom d'utilisateur">
-                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={inputCls} placeholder="Votre pseudo" />
+                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} maxLength={30} className={inputCls} placeholder="Votre pseudo" />
                 </Field>
                 <button type="submit" disabled={saving}
                   className="w-full bg-white/15 hover:bg-white/25 text-white font-semibold py-2.5 rounded-2xl text-sm transition-all disabled:opacity-50">

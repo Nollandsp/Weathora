@@ -117,6 +117,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
   // Suggestions
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const debounceRef = useRef(null);
 
   useEffect(() => {
@@ -137,7 +138,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
   const handleInputChange = (e) => {
     const query = e.target.value.trim();
     clearTimeout(debounceRef.current);
-    if (query.length < 1) {
+    if (query.length < 2) {
       setSuggestions([]);
       setShowSuggestions(false);
       return;
@@ -149,6 +150,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
         );
         const data = await res.json();
         setSuggestions(data);
+        setHighlightedIndex(-1);
         setShowSuggestions(data.length > 0);
         if (data.length === 0) setError("Ville non trouvée");
         else setError("");
@@ -159,11 +161,32 @@ export default function MainWeather({ setFullCityName, setCoords }) {
   };
 
   const handleSuggestionClick = (commune) => {
-    inputRef.current.value = commune.nom;
+    if (inputRef.current) inputRef.current.value = commune.nom;
     setSuggestions([]);
     setShowSuggestions(false);
+    setHighlightedIndex(-1);
     getWeather(commune.nom);
     setShowSearch(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (!showSuggestions || suggestions.length === 0) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => Math.min(prev + 1, suggestions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => Math.max(prev - 1, -1));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (highlightedIndex >= 0) {
+        handleSuggestionClick(suggestions[highlightedIndex]);
+      }
+      // dropdown open + nothing highlighted → block submit, user must choose
+    } else if (e.key === "Escape") {
+      setShowSuggestions(false);
+      setHighlightedIndex(-1);
+    }
   };
 
   const getWeather = useCallback(
@@ -270,10 +293,14 @@ export default function MainWeather({ setFullCityName, setCoords }) {
           setGeoLoading(false);
         }
       },
-      () => {
-        setError("Position refusée.");
+      (err) => {
+        if (err.code === 1) setError("Autorisation refusée. Vérifiez les permissions de localisation.");
+        else if (err.code === 2) setError("Position indisponible. Vérifiez le GPS.");
+        else if (err.code === 3) setError("Délai dépassé. Réessayez.");
+        else setError("Erreur de géolocalisation.");
         setGeoLoading(false);
       },
+      { timeout: 10000, maximumAge: 60000, enableHighAccuracy: false },
     );
   };
 
@@ -327,9 +354,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
   const aqiInfo = aqiLabel(aqi);
 
   return (
-    <main
-      className={`w-full min-h-screen flex flex-col ${skyClass}`}
-    >
+    <main className={`w-full min-h-screen flex flex-col ${skyClass}`}>
       {/* ══ BARRE DE RECHERCHE FLOTTANTE ══ */}
       <div className="fixed top-3 left-1/2 -translate-x-1/2 z-[9998] md:hidden w-[90vw] max-w-sm">
         {!showSearch ? (
@@ -359,7 +384,9 @@ export default function MainWeather({ setFullCityName, setCoords }) {
                 ref={inputRef}
                 type="search"
                 placeholder="Paris, Lyon..."
+                maxLength={50}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
                 onFocus={() =>
                   suggestions.length > 0 && setShowSuggestions(true)
                 }
@@ -384,13 +411,18 @@ export default function MainWeather({ setFullCityName, setCoords }) {
             {showSuggestions && suggestions.length > 0 && (
               <ul
                 className="absolute top-full left-0 right-0 mt-2 rounded-[14px] overflow-hidden animate-fade-in z-50"
-                style={{ background: "rgba(8, 18, 42, 0.96)", backdropFilter: "blur(24px)" }}
+                style={{
+                  background: "rgba(8, 18, 42, 0.96)",
+                  backdropFilter: "blur(24px)",
+                }}
               >
                 {suggestions.map((c, i) => (
                   <li
                     key={i}
                     onMouseDown={() => handleSuggestionClick(c)}
-                    className="px-4 py-3 text-white text-sm font-medium cursor-pointer hover:bg-white/8 transition-colors border-b border-white/8 last:border-0 flex items-center justify-between"
+                    className={`px-4 py-3 text-white text-sm font-medium cursor-pointer transition-colors border-b border-white/8 last:border-0 flex items-center justify-between ${
+                      highlightedIndex === i ? "bg-white/15" : "hover:bg-white/8"
+                    }`}
                   >
                     {c.nom}
                     <span className="text-white/40 text-xs">
@@ -406,7 +438,6 @@ export default function MainWeather({ setFullCityName, setCoords }) {
 
       {/* ══ SECTION PRINCIPALE : météo iOS ══ */}
       <section className="relative flex flex-col items-center justify-start pt-28 md:pt-32 pb-8 px-5 min-h-[100svh] md:min-h-[auto]">
-
         {/* Barre de recherche desktop — dans le flux normal, alignée à droite */}
         <div className="hidden md:flex w-full justify-end mb-6 px-3 lg:px-8">
           <form onSubmit={handleSubmit} className="relative">
@@ -416,7 +447,9 @@ export default function MainWeather({ setFullCityName, setCoords }) {
                 ref={inputRef}
                 type="search"
                 placeholder={cityName || "Rechercher une ville..."}
+                maxLength={50}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
                 onFocus={() =>
                   suggestions.length > 0 && setShowSuggestions(true)
                 }
@@ -439,13 +472,18 @@ export default function MainWeather({ setFullCityName, setCoords }) {
             {showSuggestions && suggestions.length > 0 && (
               <ul
                 className="absolute top-full right-0 mt-2 w-72 rounded-2xl overflow-hidden animate-fade-in z-50"
-                style={{ background: "rgba(8, 18, 42, 0.96)", backdropFilter: "blur(24px)" }}
+                style={{
+                  background: "rgba(8, 18, 42, 0.96)",
+                  backdropFilter: "blur(24px)",
+                }}
               >
                 {suggestions.map((c, i) => (
                   <li
                     key={i}
                     onMouseDown={() => handleSuggestionClick(c)}
-                    className="px-4 py-3 text-white text-sm font-medium cursor-pointer hover:bg-white/8 transition-colors border-b border-white/8 last:border-0 flex items-center justify-between"
+                    className={`px-4 py-3 text-white text-sm font-medium cursor-pointer transition-colors border-b border-white/8 last:border-0 flex items-center justify-between ${
+                      highlightedIndex === i ? "bg-white/15" : "hover:bg-white/8"
+                    }`}
                   >
                     {c.nom}
                     <span className="text-white/40 text-xs">
@@ -455,12 +493,12 @@ export default function MainWeather({ setFullCityName, setCoords }) {
                 ))}
               </ul>
             )}
+            {error && (
+              <p className="mt-2 text-[11px] font-semibold text-red-300 text-right animate-fade-in">
+                {error}
+              </p>
+            )}
           </form>
-          {error && (
-            <p className="mt-2 text-[11px] font-semibold text-red-300 text-right animate-fade-in">
-              {error}
-            </p>
-          )}
         </div>
 
         {/* ── Ville + Date ── */}

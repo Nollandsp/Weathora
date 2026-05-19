@@ -18,16 +18,84 @@ export default function Inscription() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); setError(""); setSuccess("");
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-    if (password.length < 8) { setError("Le mot de passe doit contenir au moins 8 caractères"); setLoading(false); return; }
-    if (password !== confirmPassword) { setError("Les mots de passe ne correspondent pas"); setLoading(false); return; }
+    if (pseudo.trim().length < 2) {
+      setError("Le pseudo doit contenir au moins 2 caractères");
+      setLoading(false);
+      return;
+    }
+    if (pseudo.trim().length > 30) {
+      setError("Le pseudo ne peut pas dépasser 30 caractères");
+      setLoading(false);
+      return;
+    }
+    if (!/^[a-zA-ZÀ-ÿ0-9_\-]+$/.test(pseudo.trim())) {
+      setError("Le pseudo ne peut contenir que des lettres, chiffres, - et _");
+      setLoading(false);
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      setError("Adresse email invalide (ex : vous@domaine.com)");
+      setLoading(false);
+      return;
+    }
+    if (password.length < 8) {
+      setError("Le mot de passe doit contenir au moins 8 caractères");
+      setLoading(false);
+      return;
+    }
+    if (!/[A-Z]/.test(password)) {
+      setError("Le mot de passe doit contenir au moins une majuscule");
+      setLoading(false);
+      return;
+    }
+    if (!/[a-z]/.test(password)) {
+      setError("Le mot de passe doit contenir au moins une minuscule");
+      setLoading(false);
+      return;
+    }
+    if (!/[0-9]/.test(password)) {
+      setError("Le mot de passe doit contenir au moins un chiffre");
+      setLoading(false);
+      return;
+    }
+    if (!/[^a-zA-Z0-9]/.test(password)) {
+      setError(
+        "Le mot de passe doit contenir au moins un caractère spécial (!@#$…)",
+      );
+      setLoading(false);
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Les mots de passe ne correspondent pas");
+      setLoading(false);
+      return;
+    }
 
     try {
+      const checkRes = await fetch("/api/check-pseudo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pseudo: pseudo.trim() }),
+      });
+      const { taken } = await checkRes.json();
+      if (taken) {
+        setError("Ce pseudo est déjà utilisé, choisis-en un autre.");
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) {
         const msg = error.message?.toLowerCase() ?? "";
-        if (msg.includes("already registered") || msg.includes("already exists") || msg.includes("email address is already")) {
+        if (
+          msg.includes("already registered") ||
+          msg.includes("already exists") ||
+          msg.includes("email address is already")
+        ) {
           setError("Un compte existe déjà avec cette adresse email.");
         } else if (msg.includes("invalid email")) {
           setError("Adresse email invalide.");
@@ -36,54 +104,89 @@ export default function Inscription() {
         } else {
           setError("Une erreur est survenue lors de l'inscription.");
         }
-        setLoading(false); return;
+        setLoading(false);
+        return;
       }
 
       const user = data.user;
       const session = data.session;
       if (user) {
-        const { error: profileError } = await supabase.from("profiles").insert([{ id: user.id, pseudo, is_premium: false }]);
-        if (profileError) { setError("Erreur lors de la création du profil."); }
-        else if (session) { router.push("/"); }
-        else { setSuccess("Compte créé ! Vérifiez votre boîte mail."); setTimeout(() => router.push("/Connexion"), 3000); }
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .insert([{ id: user.id, pseudo: pseudo.trim(), is_premium: false }]);
+        if (profileError) {
+          setError("Erreur lors de la création du profil.");
+        } else if (session) {
+          router.push("/");
+        } else {
+          setSuccess("Compte créé ! Vérifiez votre boîte mail.");
+          setTimeout(() => router.push("/Connexion"), 3000);
+        }
       }
-    } catch { setError("Erreur lors de l'inscription."); }
+    } catch {
+      setError("Erreur lors de l'inscription.");
+    }
     setLoading(false);
   };
 
   const fields = [
-    { label: "Pseudo", val: pseudo, set: setPseudo, type: "text", ph: "Votre pseudo" },
-    { label: "Email", val: email, set: setEmail, type: "email", ph: "votre@email.com" },
+    {
+      label: "Pseudo",
+      val: pseudo,
+      set: setPseudo,
+      type: "text",
+      ph: "Votre pseudo",
+      maxLen: 30,
+    },
+    {
+      label: "Email",
+      val: email,
+      set: setEmail,
+      type: "email",
+      ph: "votre@email.com",
+    },
   ];
 
   return (
     <>
       <Navbar />
       <div className="min-h-screen ios-sky-default flex flex-col items-center justify-center p-5">
-
         <div className="ios-glass rounded-[28px] w-full max-w-sm p-8 animate-ios-appear">
           {/* En-tête */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 ios-glass-dark rounded-[18px] flex items-center justify-center mx-auto mb-4">
               <UserPlus size={28} className="text-white/80" />
             </div>
-            <h1 className="text-2xl font-semibold text-white">Créer un compte</h1>
+            <h1 className="text-2xl font-semibold text-white">
+              Créer un compte
+            </h1>
             <p className="text-white/50 text-sm mt-1">Rejoignez Weathora</p>
           </div>
 
           {error && (
-            <div className="mb-5 ios-glass-dark rounded-2xl px-4 py-3 text-red-300 text-sm font-medium animate-fade-in">{error}</div>
+            <div className="mb-5 ios-glass-dark rounded-2xl px-4 py-3 text-red-300 text-sm font-medium animate-fade-in">
+              {error}
+            </div>
           )}
           {success && (
-            <div className="mb-5 ios-glass-dark rounded-2xl px-4 py-3 text-emerald-300 text-sm font-medium animate-fade-in">{success}</div>
+            <div className="mb-5 ios-glass-dark rounded-2xl px-4 py-3 text-emerald-300 text-sm font-medium animate-fade-in">
+              {success}
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {fields.map(({ label, val, set, type, ph }) => (
+            {fields.map(({ label, val, set, type, ph, maxLen }) => (
               <div key={label}>
-                <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">{label}</label>
+                <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">
+                  {label}
+                </label>
                 <input
-                  type={type} value={val} onChange={(e) => set(e.target.value)} placeholder={ph} required
+                  type={type}
+                  value={val}
+                  onChange={(e) => set(e.target.value)}
+                  placeholder={ph}
+                  required
+                  maxLength={maxLen}
                   className="w-full ios-glass-dark rounded-2xl px-4 py-3.5 text-white placeholder-white/30 text-sm font-medium outline-none border border-transparent focus:border-white/30 transition-all"
                 />
               </div>
@@ -91,15 +194,23 @@ export default function Inscription() {
 
             {/* Mot de passe */}
             <div>
-              <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Mot de passe</label>
+              <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">
+                Mot de passe
+              </label>
               <div className="relative">
                 <input
-                  type={showPwd ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Min. 8 caractères" required
+                  type={showPwd ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Min. 8 caractères"
+                  required
                   className="w-full ios-glass-dark rounded-2xl px-4 py-3.5 pr-12 text-white placeholder-white/30 text-sm font-medium outline-none border border-transparent focus:border-white/30 transition-all"
                 />
-                <button type="button" onClick={() => setShowPwd(!showPwd)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors">
+                <button
+                  type="button"
+                  onClick={() => setShowPwd(!showPwd)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+                >
                   {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
@@ -107,16 +218,22 @@ export default function Inscription() {
 
             {/* Confirmation */}
             <div>
-              <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Confirmer</label>
+              <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">
+                Confirmer
+              </label>
               <input
-                type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••" required
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                required
                 className="w-full ios-glass-dark rounded-2xl px-4 py-3.5 text-white placeholder-white/30 text-sm font-medium outline-none border border-transparent focus:border-white/30 transition-all"
               />
             </div>
 
             <button
-              type="submit" disabled={loading}
+              type="submit"
+              disabled={loading}
               className="w-full bg-white text-gray-900 font-semibold py-3.5 rounded-2xl text-sm hover:bg-white/90 active:scale-[0.98] transition-all disabled:opacity-60 mt-2"
             >
               {loading ? "Chargement..." : "Créer mon compte"}
@@ -126,7 +243,10 @@ export default function Inscription() {
           <div className="mt-6 pt-6 border-t border-white/10 text-center">
             <p className="text-white/40 text-sm">
               Déjà membre ?{" "}
-              <a href="/Connexion" className="text-white/70 hover:text-white font-semibold transition-colors">
+              <a
+                href="/Connexion"
+                className="text-white/70 hover:text-white font-semibold transition-colors"
+              >
                 Se connecter
               </a>
             </p>
