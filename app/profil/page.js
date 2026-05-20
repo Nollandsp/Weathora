@@ -48,7 +48,8 @@ export default function Profil() {
   const router = useRouter();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const user = session?.user ?? null;
       if (user) { setUser(user); setName(user.user_metadata?.full_name || ""); setEmail(user.email || ""); }
       else router.push("/Connexion");
       setLoading(false);
@@ -82,7 +83,7 @@ export default function Profil() {
 
   const updateEmail = async (e) => {
     e.preventDefault(); setSaving(true);
-    const { error } = await supabase.auth.updateUser({ email });
+    const { error } = await supabase.auth.updateUser({ email: email.trim().toLowerCase() });
     if (error) toast.error(error.message);
     else toast.success("Email modifié. Vérifiez votre boîte mail.");
     setSaving(false);

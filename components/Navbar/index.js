@@ -111,7 +111,7 @@ export default function Navbar() {
               <span className="absolute inset-0 rounded-xl liquid-glass-bubble animate-bubble-pop" />
             )}
             <div className="relative z-10 w-full h-full">
-              <Image src="/Logo-weathora.png" alt="Weathora" fill className="object-cover" priority />
+              <Image src="/Logo-weathora.png" alt="Weathora" fill sizes="44px" className="object-cover" priority />
             </div>
           </Link>
 

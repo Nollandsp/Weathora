@@ -11,16 +11,44 @@ export default function Connexion() {
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [retryAfter, setRetryAfter] = useState(0);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); setError("");
+    if (retryAfter > 0) {
+      setError(`Trop de tentatives. Réessayez dans ${retryAfter} secondes.`);
+      return;
+    }
+    setLoading(true);
+    setError("");
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) setError("Identifiants invalides. Vérifiez votre email et mot de passe.");
-      else router.push("/");
-    } catch { setError("Erreur lors de la connexion"); }
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+      if (error) {
+        const next = failedAttempts + 1;
+        setFailedAttempts(next);
+        const delay = next >= 5 ? 30 : next >= 3 ? 10 : 0;
+        if (delay > 0) {
+          setRetryAfter(delay);
+          const interval = setInterval(() => {
+            setRetryAfter((s) => {
+              if (s <= 1) { clearInterval(interval); return 0; }
+              return s - 1;
+            });
+          }, 1000);
+        }
+        setError("Identifiants invalides. Vérifiez votre email et mot de passe.");
+      } else {
+        setFailedAttempts(0);
+        router.push("/");
+      }
+    } catch {
+      setError("Erreur lors de la connexion");
+    }
     setLoading(false);
   };
 
@@ -28,7 +56,6 @@ export default function Connexion() {
     <>
       <Navbar />
       <div className="min-h-screen ios-sky-clear-night flex flex-col items-center justify-center p-5">
-
         {/* Card glass */}
         <div className="ios-glass rounded-[28px] w-full max-w-sm p-8 animate-ios-appear">
           {/* Logo / titre */}
@@ -37,7 +64,9 @@ export default function Connexion() {
               <LogIn size={28} className="text-white/80" />
             </div>
             <h1 className="text-2xl font-semibold text-white">Connexion</h1>
-            <p className="text-white/50 text-sm mt-1">Accédez à votre espace Weathora</p>
+            <p className="text-white/50 text-sm mt-1">
+              Accédez à votre espace Weathora
+            </p>
           </div>
 
           {/* Erreur */}
@@ -56,7 +85,7 @@ export default function Connexion() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.trim())}
                 placeholder="votre@email.com"
                 required
                 className="w-full ios-glass-dark rounded-2xl px-4 py-3.5 text-white placeholder-white/30 text-sm font-medium outline-none focus:border-white/40 transition-all border border-transparent focus:border-white/30"
@@ -77,8 +106,11 @@ export default function Connexion() {
                   required
                   className="w-full ios-glass-dark rounded-2xl px-4 py-3.5 pr-12 text-white placeholder-white/30 text-sm font-medium outline-none border border-transparent focus:border-white/30 transition-all"
                 />
-                <button type="button" onClick={() => setShowPwd(!showPwd)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors">
+                <button
+                  type="button"
+                  onClick={() => setShowPwd(!showPwd)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+                >
                   {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
@@ -87,10 +119,10 @@ export default function Connexion() {
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || retryAfter > 0}
               className="w-full bg-white text-gray-900 font-semibold py-3.5 rounded-2xl text-sm hover:bg-white/90 active:scale-[0.98] transition-all disabled:opacity-60 mt-2"
             >
-              {loading ? "Connexion..." : "Se connecter"}
+              {loading ? "Connexion..." : retryAfter > 0 ? `Réessayer dans ${retryAfter}s` : "Se connecter"}
             </button>
           </form>
 
@@ -98,7 +130,10 @@ export default function Connexion() {
           <div className="mt-6 pt-6 border-t border-white/10 text-center">
             <p className="text-white/40 text-sm">
               Pas encore de compte ?{" "}
-              <a href="/Inscription" className="text-white/70 hover:text-white font-semibold transition-colors">
+              <a
+                href="/Inscription"
+                className="text-white/70 hover:text-white font-semibold transition-colors"
+              >
                 S'inscrire
               </a>
             </p>

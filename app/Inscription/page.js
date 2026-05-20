@@ -88,7 +88,10 @@ export default function Inscription() {
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+      });
       if (error) {
         const msg = error.message?.toLowerCase() ?? "";
         if (
@@ -138,13 +141,7 @@ export default function Inscription() {
       ph: "Votre pseudo",
       maxLen: 30,
     },
-    {
-      label: "Email",
-      val: email,
-      set: setEmail,
-      type: "email",
-      ph: "votre@email.com",
-    },
+    { label: "Email", val: email, set: setEmail, type: "email", ph: "votre@email.com", transform: (v) => v.trim() },
   ];
 
   return (
@@ -175,7 +172,7 @@ export default function Inscription() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {fields.map(({ label, val, set, type, ph, maxLen }) => (
+            {fields.map(({ label, val, set, type, ph, maxLen, transform }) => (
               <div key={label}>
                 <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">
                   {label}
@@ -183,7 +180,7 @@ export default function Inscription() {
                 <input
                   type={type}
                   value={val}
-                  onChange={(e) => set(e.target.value)}
+                  onChange={(e) => set(transform ? transform(e.target.value) : e.target.value)}
                   placeholder={ph}
                   required
                   maxLength={maxLen}

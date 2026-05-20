@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import {
   Heart,
@@ -86,6 +87,8 @@ function Widget({ Icon, label, value, unit, sub, color = "text-white" }) {
 
 export default function MainWeather({ setFullCityName, setCoords }) {
   const { unit, toggleUnit, convertTemp } = useUnit();
+  const searchParams = useSearchParams();
+  const initialCity = searchParams.get("city");
 
   const inputRef = useRef(null);
   const [skyClass, setSkyClass] = useState("ios-sky-default");
@@ -113,6 +116,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
   const [aqi, setAqi] = useState(null);
   const [geoLoading, setGeoLoading] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
   // Suggestions
   const [suggestions, setSuggestions] = useState([]);
@@ -126,10 +130,10 @@ export default function MainWeather({ setFullCityName, setCoords }) {
         setUser(session.user);
         supabase
           .from("favorites")
-          .select("city_name")
+          .select("city_name, department")
           .eq("profiles_id", session.user.id)
           .then(({ data, error }) => {
-            if (!error && data) setFavorites(data.map((f) => f.city_name));
+            if (!error && data) setFavorites(data.map((f) => ({ city_name: f.city_name, department: f.department ?? "" })));
           });
       }
     });
@@ -137,6 +141,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
 
   const handleInputChange = (e) => {
     const query = e.target.value.trim();
+    setInputValue(query);
     clearTimeout(debounceRef.current);
     if (query.length < 2) {
       setSuggestions([]);
@@ -165,7 +170,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
     setSuggestions([]);
     setShowSuggestions(false);
     setHighlightedIndex(-1);
-    getWeather(commune.nom);
+    getWeather(commune.nom, commune.departement?.code);
     setShowSearch(false);
   };
 
@@ -190,11 +195,12 @@ export default function MainWeather({ setFullCityName, setCoords }) {
   };
 
   const getWeather = useCallback(
-    async (city) => {
+    async (city, deptCode = null) => {
       try {
         setError("");
+        const deptParam = deptCode ? `&codeDepartement=${deptCode}` : "";
         const geoRes = await fetch(
-          `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(city)}&fields=departement&boost=population&limit=1`,
+          `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(city)}&fields=departement&boost=population&limit=1${deptParam}`,
         );
         const geoData = await geoRes.json();
         if (geoData.length === 0) {
@@ -258,6 +264,10 @@ export default function MainWeather({ setFullCityName, setCoords }) {
     [setFullCityName, setCoords],
   );
 
+  useEffect(() => {
+    if (initialCity) getWeather(initialCity);
+  }, [initialCity, getWeather]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const city = inputRef.current?.value.trim();
@@ -294,8 +304,12 @@ export default function MainWeather({ setFullCityName, setCoords }) {
         }
       },
       (err) => {
-        if (err.code === 1) setError("Autorisation refusée. Vérifiez les permissions de localisation.");
-        else if (err.code === 2) setError("Position indisponible. Vérifiez le GPS.");
+        if (err.code === 1)
+          setError(
+            "Autorisation refusée. Vérifiez les permissions de localisation.",
+          );
+        else if (err.code === 2)
+          setError("Position indisponible. Vérifiez le GPS.");
         else if (err.code === 3) setError("Délai dépassé. Réessayez.");
         else setError("Erreur de géolocalisation.");
         setGeoLoading(false);
@@ -323,6 +337,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
       .select("id")
       .eq("profiles_id", user.id)
       .eq("city_name", city)
+      .eq("department", cityDesc ?? "")
       .maybeSingle();
     if (existing) {
       toast.error("Déjà dans vos favoris.");
@@ -333,12 +348,12 @@ export default function MainWeather({ setFullCityName, setCoords }) {
     } = await supabase.auth.getSession();
     const { error: insertError } = await supabase
       .from("favorites")
-      .insert({ profiles_id: session.user.id, city_name: city });
+      .insert({ profiles_id: session.user.id, city_name: city, department: cityDesc ?? "" });
     if (insertError) {
       toast.error("Erreur lors de l'ajout.");
       return;
     }
-    setFavorites([...favorites, city]);
+    setFavorites([...favorites, { city_name: city, department: cityDesc ?? "" }]);
     toast.success(`${city} ajouté !`);
   };
 
@@ -421,7 +436,9 @@ export default function MainWeather({ setFullCityName, setCoords }) {
                     key={i}
                     onMouseDown={() => handleSuggestionClick(c)}
                     className={`px-4 py-3 text-white text-sm font-medium cursor-pointer transition-colors border-b border-white/8 last:border-0 flex items-center justify-between ${
-                      highlightedIndex === i ? "bg-white/15" : "hover:bg-white/8"
+                      highlightedIndex === i
+                        ? "bg-white/15"
+                        : "hover:bg-white/8"
                     }`}
                   >
                     {c.nom}
@@ -458,6 +475,14 @@ export default function MainWeather({ setFullCityName, setCoords }) {
                 autoComplete="off"
               />
               <button
+                type="submit"
+                disabled={!inputValue}
+                aria-label="Rechercher"
+                className="text-white/50 hover:text-white transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <Search size={16} />
+              </button>
+              <button
                 type="button"
                 onClick={handleGeolocate}
                 title="Ma position"
@@ -482,7 +507,9 @@ export default function MainWeather({ setFullCityName, setCoords }) {
                     key={i}
                     onMouseDown={() => handleSuggestionClick(c)}
                     className={`px-4 py-3 text-white text-sm font-medium cursor-pointer transition-colors border-b border-white/8 last:border-0 flex items-center justify-between ${
-                      highlightedIndex === i ? "bg-white/15" : "hover:bg-white/8"
+                      highlightedIndex === i
+                        ? "bg-white/15"
+                        : "hover:bg-white/8"
                     }`}
                   >
                     {c.nom}
@@ -574,12 +601,13 @@ export default function MainWeather({ setFullCityName, setCoords }) {
                 <button
                   key={i}
                   onClick={() => {
-                    if (inputRef.current) inputRef.current.value = fav;
-                    getWeather(fav);
+                    if (inputRef.current) inputRef.current.value = fav.city_name;
+                    getWeather(fav.city_name);
                   }}
                   className="ios-glass rounded-full px-3 py-1 text-[11px] font-semibold text-white/70 hover:bg-white/20 transition-all"
+                  title={fav.department}
                 >
-                  {fav}
+                  {fav.city_name}
                 </button>
               ))}
             </div>

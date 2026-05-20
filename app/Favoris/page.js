@@ -1,12 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import WeatherIcon from "@/components/WeatherIcon";
 import { useUnit } from "@/hooks/useUnit";
-import { Trash2, Heart, Wind, Droplets, Gauge, MapPin } from "lucide-react";
+import { Trash2, Heart, Wind, Droplets, Gauge } from "lucide-react";
 
 function getSkyClass(weatherMain, icon) {
   const isNight = icon && icon.endsWith("n");
@@ -25,10 +26,12 @@ export default function Favoris() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const pendingDeletes = useRef({});
 
   useEffect(() => {
     const getUserAndFavorites = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user ?? null;
       setUser(user);
 
       if (user) {
@@ -64,11 +67,41 @@ export default function Favoris() {
     getUserAndFavorites();
   }, []);
 
-  const handleDelete = async (id) => {
-    const { data: { user: cu } } = await supabase.auth.getUser();
-    if (!cu) return;
-    const { error } = await supabase.from("favorites").delete().eq("id", id).eq("profiles_id", cu.id);
-    if (!error) setFavorites(favorites.filter((f) => f.id !== id));
+  const handleDelete = (id) => {
+    if (!user) return;
+    const originalIndex = favorites.findIndex((f) => f.id === id);
+    const item = favorites[originalIndex];
+    if (!item) return;
+
+    // Suppression optimiste immédiate
+    setFavorites((prev) => prev.filter((f) => f.id !== id));
+
+    // Vraie suppression DB après 5s
+    const timeoutId = setTimeout(async () => {
+      delete pendingDeletes.current[id];
+      await supabase.from("favorites").delete().eq("id", id).eq("profiles_id", user.id);
+    }, 5000);
+
+    pendingDeletes.current[id] = { item, originalIndex, timeoutId };
+
+    toast(`${item.city_name} retiré des favoris`, {
+      duration: 5000,
+      position: "bottom-right",
+      action: {
+        label: "Annuler",
+        onClick: () => {
+          const pending = pendingDeletes.current[id];
+          if (!pending) return;
+          clearTimeout(pending.timeoutId);
+          delete pendingDeletes.current[id];
+          setFavorites((prev) => {
+            const restored = [...prev];
+            restored.splice(pending.originalIndex, 0, pending.item);
+            return restored;
+          });
+        },
+      },
+    });
   };
 
   const today = new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });

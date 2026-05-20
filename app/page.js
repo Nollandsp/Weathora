@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import dynamic from "next/dynamic";
 import MainWeather from "@/components/MainWeather";
 import Footer from "@/components/Footer";
@@ -19,7 +19,9 @@ export default function Home() {
       <Navbar />
 
       {/* MainWeather gère son propre fond (sky gradient) */}
-      <MainWeather setFullCityName={setFullCityName} setCoords={setCoords} />
+      <Suspense fallback={null}>
+        <MainWeather setFullCityName={setFullCityName} setCoords={setCoords} />
+      </Suspense>
 
       {/* Section prévisions + widgets — même fond que MainWeather via continuation du gradient */}
       <div className="flex-grow bg-gradient-to-b from-[#1e3a5f] via-[#1a3060] to-[#16284e]">

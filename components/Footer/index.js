@@ -38,7 +38,7 @@ export default function Footer() {
             <div className="flex flex-col gap-4 max-w-xs">
               <Link href="/" className="flex items-center gap-3 group w-fit">
                 <div className="relative w-9 h-9 rounded-xl overflow-hidden shrink-0">
-                  <Image src="/Logo-weathora.png" alt="Weathora" fill className="object-cover" priority />
+                  <Image src="/Logo-weathora.png" alt="Weathora" fill sizes="36px" className="object-cover" priority />
                 </div>
                 <span className="text-white font-semibold text-lg tracking-tight group-hover:text-white/80 transition-colors">
                   Weathora
