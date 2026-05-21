@@ -273,6 +273,11 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Fond de secours : évite le blanc du body si un gradient ne couvre pas tout */
+html, body {
+  background-color: #1e3a5f;
+}
+
 /* ══════════════════════════════════════════════
    SHADCN TOKENS
    ══════════════════════════════════════════════ */

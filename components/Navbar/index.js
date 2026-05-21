@@ -177,8 +177,6 @@ export default function Navbar() {
         </nav>
       </div>
 
-      {/* Spacer mobile pour éviter que le contenu passe sous la tab bar */}
-      <div className="md:hidden h-16" />
     </>
   );
 }

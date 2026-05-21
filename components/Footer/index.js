@@ -29,7 +29,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer className="w-full px-5 md:px-8 lg:px-14 py-10 md:py-12">
+      <footer className="w-full px-5 md:px-8 lg:px-14 pt-10 pb-28 md:py-12">
         <div className="ios-glass rounded-2xl px-6 md:px-10 py-8">
 
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
