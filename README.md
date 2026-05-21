@@ -141,6 +141,18 @@ npm run lint     # Vérification ESLint
 
 ---
 
+## 🔍 Démarche qualité
+
+Ce projet a fait l'objet d'une phase de tests fonctionnels et sécurité approfondie :
+
+- **~110 cas de test manuels** couvrant Recherche, Inscription, Connexion, Favoris, Premium
+- **Audit sécurité inspiré du OWASP Top 10** :
+  - Validation et échappement des inputs (anti-XSS)
+  - Row Level Security (RLS) sur Supabase
+  - Trigger SQL d'intégrité pour les contraintes métier
+  - Rate limiting Auth, régénération des clés API
+- **Backlog priorisé** des améliorations identifiées : [BACKLOG.md](./BACKLOG.md)
+
 ## Auteur
 
 Projet réalisé dans le cadre de l'ECF par Da Silva Pereira Nollan.

@@ -1,6 +1,6 @@
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
-import { Toaster } from "@/components/ui/sonner";
+import ToasterProvider from "@/components/ToasterProvider";
 
 export const metadata = {
   title: "Weathora — Votre météo de confiance",
@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="relative min-h-screen">
         <div className="relative z-10">{children}</div>
-        <Toaster richColors position="top-center" />
+        <ToasterProvider />
       </body>
     </html>
   );

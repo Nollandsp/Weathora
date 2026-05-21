@@ -86,7 +86,6 @@ export default function Favoris() {
 
     toast(`${item.city_name} retiré des favoris`, {
       duration: 5000,
-      position: "bottom-right",
       action: {
         label: "Annuler",
         onClick: () => {
@@ -235,6 +234,24 @@ export default function Favoris() {
                 </Link>
               ))}
             </div>
+          )}
+
+          {/* Upsell Premium */}
+          {!loading && favorites.length >= 2 && (
+            <Link
+              href="/premium"
+              className="mt-4 flex items-center justify-between gap-4 ios-glass rounded-2xl px-5 py-3.5 animate-ios-appear hover:bg-white/10 transition-colors group"
+            >
+              <p className="text-white/60 text-sm">
+                <span className="text-white/90 font-semibold">{favorites.length}/3 favoris</span>
+                {favorites.length === 3
+                  ? " — Limite atteinte. Passez Premium pour des favoris illimités."
+                  : " — Bientôt à la limite. Passez Premium pour des favoris illimités."}
+              </p>
+              <span className="text-white/50 group-hover:text-white text-xs font-semibold shrink-0 transition-colors">
+                Premium →
+              </span>
+            </Link>
           )}
         </div>
 
