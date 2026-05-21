@@ -37,9 +37,7 @@ export default function Navbar() {
         aria-label={label}
         className={[
           "relative flex flex-col items-center justify-center gap-1 cursor-pointer",
-          /* desktop pill */
           "md:shrink-0 md:w-[60px] lg:w-[68px] md:py-2.5 md:rounded-2xl md:group md:transition-transform md:duration-200 md:hover:scale-105 md:active:scale-95",
-          /* mobile tab */
           "flex-1 py-2 rounded-none",
           mobileOnly ? "md:hidden" : "",
           desktopOnly ? "hidden md:flex" : "",

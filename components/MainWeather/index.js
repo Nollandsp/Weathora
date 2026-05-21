@@ -456,9 +456,9 @@ export default function MainWeather({ setFullCityName, setCoords }) {
       </div>
 
       {/* ══ SECTION PRINCIPALE : météo iOS ══ */}
-      <section className="relative flex flex-col items-center justify-start pt-28 md:pt-32 pb-8 px-5 min-h-[100svh] md:min-h-[auto]">
-        {/* Barre de recherche desktop — dans le flux normal, alignée à droite */}
-        <div className="hidden md:flex w-full justify-end mb-6 px-3 lg:px-8">
+      <section className="relative flex flex-col pt-28 md:pt-20 pb-8 px-5 md:px-8 lg:px-16 min-h-[100svh] md:min-h-0">
+        {/* Barre de recherche desktop */}
+        <div className="hidden md:flex w-full justify-end mb-8">
           <form onSubmit={handleSubmit} className="relative">
             <div className="ios-glass rounded-2xl flex items-center gap-2 px-4 py-3 w-72">
               <Search size={16} className="text-white/50 shrink-0" />
@@ -530,8 +530,14 @@ export default function MainWeather({ setFullCityName, setCoords }) {
           </form>
         </div>
 
-        {/* ── Ville + Date ── */}
-        <div className="text-center animate-ios-appear">
+        {/* Layout principal : colonne mobile, deux colonnes desktop */}
+        <div className="flex flex-col items-center md:grid md:grid-cols-2 md:gap-12 md:items-center w-full">
+
+          {/* ── GAUCHE : météo principale ── */}
+          <div className="flex flex-col items-center">
+
+            {/* Ville + Date */}
+            <div className="text-center animate-ios-appear">
           <h1 className="text-[clamp(2rem,8vw,4rem)] font-semibold text-white tracking-tight leading-none">
             {cityName || "Recherchez une ville"}
           </h1>
@@ -616,142 +622,156 @@ export default function MainWeather({ setFullCityName, setCoords }) {
           )}
         </div>
 
-        {/* ── Bouton toggle unité ── */}
-        <button
-          onClick={toggleUnit}
-          className="mt-3 ios-glass rounded-full px-3 py-1.5 flex items-center gap-1.5 text-white/60 text-[11px] font-semibold hover:bg-white/20 transition-all animate-ios-appear"
-          style={{ animationDelay: "0.12s" }}
-        >
-          <Thermometer size={11} />
-          {unit === "C" ? "°F" : "°C"}
-        </button>
+            {/* ── Bouton toggle unité ── */}
+            <button
+              onClick={toggleUnit}
+              className="mt-3 ios-glass rounded-full px-3 py-1.5 flex items-center gap-1.5 text-white/60 text-[11px] font-semibold hover:bg-white/20 transition-all animate-ios-appear"
+              style={{ animationDelay: "0.12s" }}
+            >
+              <Thermometer size={11} />
+              {unit === "C" ? "°F" : "°C"}
+            </button>
 
-        {/* ── WIDGETS GRID ── */}
-        {cityName && (
-          <div
-            className="w-full max-w-2xl mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3 animate-ios-appear"
-            style={{ animationDelay: "0.18s" }}
-          >
-            <Widget
-              Icon={Thermometer}
-              label="Ressenti"
-              value={feelsC !== null ? convertTemp(feelsC) : "—"}
-              unit={`°${unit}`}
-              sub={
-                feelsC !== null && feelsC < tempC ? "Plus froid" : "Similaire"
-              }
-            />
-            <Widget
-              Icon={Wind}
-              label="Vent"
-              value={windSpeed !== null ? Math.round(windSpeed * 3.6) : "—"}
-              unit="km/h"
-              sub={`${windDir(windDeg)} · Rafales ${windGust ? Math.round(windGust * 3.6) : "—"} km/h`}
-            />
-            <Widget
-              Icon={Droplets}
-              label="Humidité"
-              value={humidity !== null ? humidity : "—"}
-              unit="%"
-              sub={
-                humidity > 70 ? "Élevée" : humidity > 40 ? "Normale" : "Faible"
-              }
-            />
-            <Widget
-              Icon={Eye}
-              label="Visibilité"
-              value={visibility !== null ? visibility : "—"}
-              unit=" km"
-              sub={
-                visibility >= 10
-                  ? "Excellente"
-                  : visibility >= 5
-                    ? "Bonne"
-                    : "Réduite"
-              }
-            />
-            <Widget
-              Icon={GaugeIcon}
-              label="Pression"
-              value={pressure !== null ? pressure : "—"}
-              unit=" hPa"
-              sub={
-                pressure > 1013
-                  ? "Haute"
-                  : pressure < 1000
-                    ? "Basse"
-                    : "Normale"
-              }
-            />
-            <Widget
-              Icon={Activity}
-              label="Qualité air"
-              value={aqi ? aqiLabel(aqi).label : "—"}
-              color={aqi ? aqiLabel(aqi).color : "text-white/60"}
-              sub={aqi ? `Indice ${aqi}/5` : "Non disponible"}
-            />
-            {sunrise && (
-              <Widget
-                Icon={Sunrise}
-                label="Lever"
-                value={fmtTime(sunrise)}
-                sub="Heure solaire"
-              />
+            {/* Invite recherche si pas de ville */}
+            {!cityName && (
+              <div
+                className="mt-12 text-center animate-ios-appear"
+                style={{ animationDelay: "0.2s" }}
+              >
+                <p className="text-white/50 text-sm font-medium">
+                  Recherchez une ville pour afficher la météo
+                </p>
+                <button
+                  onClick={handleGeolocate}
+                  className="mt-3 ios-glass rounded-full px-5 py-2.5 flex items-center gap-2 text-white/80 text-sm font-semibold mx-auto hover:bg-white/20 transition-all"
+                >
+                  <LocateFixed
+                    size={16}
+                    className={geoLoading ? "animate-pulse" : ""}
+                  />
+                  Utiliser ma position
+                </button>
+              </div>
             )}
-            {sunset && (
-              <Widget
-                Icon={Sunset}
-                label="Coucher"
-                value={fmtTime(sunset)}
-                sub="Heure solaire"
-              />
+
+            {/* Erreur mobile */}
+            {error && (
+              <p className="mt-3 text-[11px] font-semibold text-red-300 text-center animate-fade-in md:hidden">
+                {error}
+              </p>
             )}
-            {clouds !== null && (
+          </div>
+          {/* ── FIN colonne gauche ── */}
+
+          {/* ── DROITE : widgets ── */}
+          {!cityName && (
+            <div className="hidden md:grid grid-cols-3 gap-3 w-full opacity-20 pointer-events-none">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <div key={i} className="ios-glass rounded-[20px] min-h-[110px]" />
+              ))}
+            </div>
+          )}
+          {cityName && (
+            <div
+              className="w-full mt-8 md:mt-0 grid grid-cols-2 sm:grid-cols-3 gap-3 animate-ios-appear"
+              style={{ animationDelay: "0.18s" }}
+            >
               <Widget
-                Icon={CloudRain}
-                label="Nuages"
-                value={clouds}
-                unit="%"
+                Icon={Thermometer}
+                label="Ressenti"
+                value={feelsC !== null ? convertTemp(feelsC) : "—"}
+                unit={`°${unit}`}
                 sub={
-                  clouds > 80
-                    ? "Très nuageux"
-                    : clouds > 40
-                      ? "Partiellement"
-                      : "Dégagé"
+                  feelsC !== null && feelsC < tempC ? "Plus froid" : "Similaire"
                 }
               />
-            )}
-          </div>
-        )}
-
-        {/* Invite recherche si pas de ville */}
-        {!cityName && (
-          <div
-            className="mt-12 text-center animate-ios-appear"
-            style={{ animationDelay: "0.2s" }}
-          >
-            <p className="text-white/50 text-sm font-medium">
-              Recherchez une ville pour afficher la météo
-            </p>
-            <button
-              onClick={handleGeolocate}
-              className="mt-3 ios-glass rounded-full px-5 py-2.5 flex items-center gap-2 text-white/80 text-sm font-semibold mx-auto hover:bg-white/20 transition-all"
-            >
-              <LocateFixed
-                size={16}
-                className={geoLoading ? "animate-pulse" : ""}
+              <Widget
+                Icon={Wind}
+                label="Vent"
+                value={windSpeed !== null ? Math.round(windSpeed * 3.6) : "—"}
+                unit="km/h"
+                sub={`${windDir(windDeg)} · Rafales ${windGust ? Math.round(windGust * 3.6) : "—"} km/h`}
               />
-              Utiliser ma position
-            </button>
-          </div>
-        )}
+              <Widget
+                Icon={Droplets}
+                label="Humidité"
+                value={humidity !== null ? humidity : "—"}
+                unit="%"
+                sub={
+                  humidity > 70 ? "Élevée" : humidity > 40 ? "Normale" : "Faible"
+                }
+              />
+              <Widget
+                Icon={Eye}
+                label="Visibilité"
+                value={visibility !== null ? visibility : "—"}
+                unit=" km"
+                sub={
+                  visibility >= 10
+                    ? "Excellente"
+                    : visibility >= 5
+                      ? "Bonne"
+                      : "Réduite"
+                }
+              />
+              <Widget
+                Icon={GaugeIcon}
+                label="Pression"
+                value={pressure !== null ? pressure : "—"}
+                unit=" hPa"
+                sub={
+                  pressure > 1013
+                    ? "Haute"
+                    : pressure < 1000
+                      ? "Basse"
+                      : "Normale"
+                }
+              />
+              <Widget
+                Icon={Activity}
+                label="Qualité air"
+                value={aqi ? aqiLabel(aqi).label : "—"}
+                color={aqi ? aqiLabel(aqi).color : "text-white/60"}
+                sub={aqi ? `Indice ${aqi}/5` : "Non disponible"}
+              />
+              {sunrise && (
+                <Widget
+                  Icon={Sunrise}
+                  label="Lever"
+                  value={fmtTime(sunrise)}
+                  sub="Heure solaire"
+                />
+              )}
+              {sunset && (
+                <Widget
+                  Icon={Sunset}
+                  label="Coucher"
+                  value={fmtTime(sunset)}
+                  sub="Heure solaire"
+                />
+              )}
+              {clouds !== null && (
+                <Widget
+                  Icon={CloudRain}
+                  label="Nuages"
+                  value={clouds}
+                  unit="%"
+                  sub={
+                    clouds > 80
+                      ? "Très nuageux"
+                      : clouds > 40
+                        ? "Partiellement"
+                        : "Dégagé"
+                  }
+                />
+              )}
+            </div>
+          )}
+          {/* ── FIN colonne droite ── */}
 
-        {/* Erreur mobile */}
-        {error && (
-          <p className="mt-3 text-[11px] font-semibold text-red-300 text-center animate-fade-in md:hidden">
-            {error}
-          </p>
-        )}
+        </div>
+        {/* ── FIN layout deux colonnes ── */}
+
       </section>
     </main>
   );

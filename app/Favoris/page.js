@@ -182,24 +182,24 @@ export default function Favoris() {
                   <div className={`absolute inset-0 ${getSkyClass(fav.weatherMain, fav.iconCode)}`} />
                   <div className="absolute inset-0 bg-black/20" />
 
-                  {/* Bouton suppression */}
-                  <button
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(fav.id); }}
-                    aria-label="Supprimer"
-                    className="absolute top-4 right-4 z-20 ios-glass rounded-full p-2 text-white/60 hover:text-red-400 transition-colors cursor-pointer"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-
                   {/* Contenu */}
                   <div className="relative z-10 p-5">
-                    {/* Top: ville + icône */}
+                    {/* Top: ville + icône + suppression */}
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <h3 className="text-xl font-semibold text-white leading-tight">{fav.city_name}</h3>
                         <p className="text-white/60 text-xs capitalize mt-0.5">{fav.weather_condition}</p>
                       </div>
-                      {fav.iconCode && <WeatherIcon iconCode={fav.iconCode} size={36} />}
+                      <div className="flex items-center gap-2 shrink-0">
+                        {fav.iconCode && <WeatherIcon iconCode={fav.iconCode} size={36} />}
+                        <button
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(fav.id); }}
+                          aria-label="Supprimer"
+                          className="ios-glass rounded-full p-2 text-white/60 hover:text-red-400 transition-colors cursor-pointer"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
 
                     {/* Température */}
