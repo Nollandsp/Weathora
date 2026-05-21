@@ -373,7 +373,7 @@ export default function MainWeather({ setFullCityName, setCoords }) {
   return (
     <main className={`w-full min-h-screen flex flex-col ${skyClass}`}>
       {/* ══ BARRE DE RECHERCHE FLOTTANTE ══ */}
-      <div className="fixed top-3 left-1/2 -translate-x-1/2 z-[9998] md:hidden w-[90vw] max-w-sm">
+      <div className="fixed left-1/2 -translate-x-1/2 z-[9998] md:hidden w-[90vw] max-w-sm" style={{ top: 'max(0.75rem, env(safe-area-inset-top, 0.75rem))' }}>
         {!showSearch ? (
           <button
             onClick={() => setShowSearch(true)}

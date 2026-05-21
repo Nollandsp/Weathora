@@ -278,6 +278,21 @@ html, body {
   background-color: #1e3a5f;
 }
 
+/* Safe area — home indicator iPhone */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Empêche le zoom iOS sur les inputs (font-size < 16px déclenche le zoom) */
+@media (max-width: 767px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
 /* ══════════════════════════════════════════════
    SHADCN TOKENS
    ══════════════════════════════════════════════ */
