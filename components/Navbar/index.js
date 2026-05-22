@@ -13,11 +13,17 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
+    // INITIAL_SESSION se déclenche dès que Supabase a restauré la session depuis localStorage
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        setUser(null);
+      } else {
+        setUser(session?.user ?? null);
+      }
     });
-    const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUser(session?.user || null);
+    // Lecture directe en parallèle pour affichage immédiat sans attendre l'event
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
     });
     return () => listener?.subscription.unsubscribe();
   }, []);

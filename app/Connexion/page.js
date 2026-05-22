@@ -24,7 +24,7 @@ export default function Connexion() {
     setLoading(true);
     setError("");
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
       });
@@ -42,7 +42,8 @@ export default function Connexion() {
           }, 1000);
         }
         setError("Identifiants invalides. Vérifiez votre email et mot de passe.");
-      } else {
+      } else if (data.session) {
+        // Session confirmée côté client avant de naviguer
         setFailedAttempts(0);
         router.push("/");
       }
