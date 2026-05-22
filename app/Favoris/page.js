@@ -131,7 +131,7 @@ export default function Favoris() {
       <div className="min-h-screen ios-sky-default flex flex-col">
 
         {/* Header */}
-        <div className="pt-24 md:pt-28 pb-4 px-5 md:px-8 lg:px-16">
+        <div className="pt-8 md:pt-28 pb-4 px-5 md:px-8 lg:px-16">
           <div className="flex items-end justify-between gap-4 mb-6 animate-ios-appear">
             <div>
               <p className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-1 capitalize">{today}</p>

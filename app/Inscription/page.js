@@ -147,7 +147,7 @@ export default function Inscription() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen ios-sky-default flex flex-col items-center justify-center p-5">
+      <div className="min-h-screen ios-sky-default flex flex-col items-center justify-center px-5 pt-5 pb-28">
         <div className="ios-glass rounded-[28px] w-full max-w-sm p-8 animate-ios-appear">
           {/* En-tête */}
           <div className="text-center mb-8">

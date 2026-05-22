@@ -5,9 +5,6 @@ import ToasterProvider from "@/components/ToasterProvider";
 export const metadata = {
   title: "Weathora — Votre météo de confiance",
   description: "Une interface claire et moderne pour vous accompagner au quotidien.",
-  icons: {
-    apple: "/Gorlok.webp",
-  },
 };
 
 export const viewport = {

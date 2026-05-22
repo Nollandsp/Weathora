@@ -134,7 +134,7 @@ export default function Profil() {
     <>
       <Navbar />
       <div className="min-h-screen ios-sky-default flex flex-col">
-        <div className="pt-24 md:pt-28 pb-4 px-5 md:px-8 lg:px-16">
+        <div className="pt-8 md:pt-28 pb-4 px-5 md:px-8 lg:px-16">
 
           {/* Header */}
           <div className="mb-6 animate-ios-appear">
