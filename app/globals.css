@@ -273,6 +273,55 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* ══════════════════════════════════════════════
+   WEATHER BACKGROUND ANIMATIONS
+   ══════════════════════════════════════════════ */
+
+@keyframes wb-rain {
+  0%   { transform: rotate(15deg) translateY(-30px); opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 0.7; }
+  100% { transform: rotate(15deg) translateY(110vh); opacity: 0; }
+}
+
+@keyframes wb-snow {
+  0%   { transform: translateX(0) translateY(-10px); opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { transform: translateX(var(--drift, 30px)) translateY(50vh); }
+  90%  { opacity: 0.8; }
+  100% { transform: translateX(calc(var(--drift, 30px) * -0.4)) translateY(110vh); opacity: 0; }
+}
+
+@keyframes wb-star {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50%       { opacity: 0.95; transform: scale(1.3); }
+}
+
+@keyframes wb-sun-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.06); }
+}
+
+@keyframes wb-sun-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes wb-cloud {
+  from { transform: translateX(-5%); }
+  to   { transform: translateX(130vw); }
+}
+
+@keyframes wb-fog {
+  0%, 100% { transform: translateX(-6%);  opacity: 0.25; }
+  50%       { transform: translateX(6%);   opacity: 0.45; }
+}
+
+@keyframes wb-lightning {
+  0%, 88%, 90%, 92%, 100% { background: transparent; }
+  89%, 91% { background: rgba(210, 220, 255, 0.35); }
+}
+
 /* Fond de secours : évite le blanc du body si un gradient ne couvre pas tout */
 html, body {
   background-color: #1e3a5f;

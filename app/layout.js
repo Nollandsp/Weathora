@@ -6,7 +6,7 @@ export const metadata = {
   title: "Weathora — Votre météo de confiance",
   description: "Une interface claire et moderne pour vous accompagner au quotidien.",
   icons: {
-    apple: "/apple-touch-icon.png",
+    apple: "/Gorlok.webp",
   },
 };
 
