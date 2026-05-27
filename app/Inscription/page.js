@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function Inscription() {
   const [pseudo, setPseudo] = useState("");
@@ -14,6 +15,7 @@ export default function Inscription() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [captchaToken, setCaptchaToken] = useState(null);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -91,6 +93,7 @@ export default function Inscription() {
       const { data, error } = await supabase.auth.signUp({
         email: email.trim().toLowerCase(),
         password,
+        options: { captchaToken },
       });
       if (error) {
         const msg = error.message?.toLowerCase() ?? "";
@@ -147,8 +150,8 @@ export default function Inscription() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen ios-sky-default flex flex-col items-center justify-center px-5 pt-5 pb-28">
-        <div className="ios-glass rounded-[28px] w-full max-w-sm p-8 animate-ios-appear">
+      <div className="min-h-screen ios-sky-default flex flex-col items-center justify-center px-5 pt-5 pb-28 md:pt-36 md:pb-8">
+        <div className="ios-glass rounded-[28px] w-full max-w-sm p-6 sm:p-8 animate-ios-appear">
           {/* En-tête */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 ios-glass-dark rounded-[18px] flex items-center justify-center mx-auto mb-4">
@@ -225,6 +228,15 @@ export default function Inscription() {
                 placeholder="••••••••"
                 required
                 className="w-full ios-glass-dark rounded-2xl px-4 py-3.5 text-white placeholder-white/30 text-sm font-medium outline-none border border-transparent focus:border-white/30 transition-all"
+              />
+            </div>
+
+            {/* Captcha */}
+            <div className="w-full overflow-hidden rounded-xl">
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                onSuccess={setCaptchaToken}
+                options={{ theme: "dark", size: "flexible" }}
               />
             </div>
 

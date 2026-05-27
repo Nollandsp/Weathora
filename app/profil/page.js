@@ -113,7 +113,11 @@ export default function Profil() {
     });
     const data = await res.json();
     if (!res.ok) { toast.error("Erreur : " + (data.error || "Erreur inconnue")); }
-    else { await supabase.auth.signOut(); setShowDeleteModal(false); router.push("/"); }
+    else {
+      try { await supabase.auth.signOut(); } catch { /* session déjà invalide après suppression */ }
+      setShowDeleteModal(false);
+      router.push("/Connexion");
+    }
     setSaving(false);
   };
 

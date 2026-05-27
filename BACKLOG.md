@@ -80,6 +80,7 @@
 
 ### Sécurité
 
+- [x] **Clé OpenWeather protégée** : passe par les routes API Next.js côté serveur, aucune exposition au navigateur
 - [x] **Régénération complète des clés API Supabase** (anon + service_role)
 - [x] **Trigger SQL `enforce_favorites_limit`** créé pour bloquer l'ajout de favoris au-delà de 3 côté serveur (anti-bypass de la limite Premium)
 - [x] **Rate limiting Supabase Auth** configuré (5 requêtes / 5 minutes / IP sur sign-up et sign-in)
