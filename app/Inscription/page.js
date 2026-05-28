@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function Inscription() {
   const [pseudo, setPseudo] = useState("");
@@ -14,6 +14,7 @@ export default function Inscription() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [captchaToken, setCaptchaToken] = useState(null);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -76,56 +77,27 @@ export default function Inscription() {
     }
 
     try {
-      const checkRes = await fetch("/api/check-pseudo", {
+      const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pseudo: pseudo.trim() }),
+        body: JSON.stringify({
+          pseudo: pseudo.trim(),
+          email: email.trim().toLowerCase(),
+          password,
+          captchaToken,
+        }),
       });
-      const { taken } = await checkRes.json();
-      if (taken) {
-        setError("Ce pseudo est déjà utilisé, choisis-en un autre.");
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        setError(result.error || "Une erreur est survenue lors de l'inscription.");
         setLoading(false);
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim().toLowerCase(),
-        password,
-      });
-      if (error) {
-        const msg = error.message?.toLowerCase() ?? "";
-        if (
-          msg.includes("already registered") ||
-          msg.includes("already exists") ||
-          msg.includes("email address is already")
-        ) {
-          setError("Un compte existe déjà avec cette adresse email.");
-        } else if (msg.includes("invalid email")) {
-          setError("Adresse email invalide.");
-        } else if (msg.includes("password")) {
-          setError("Le mot de passe ne respecte pas les critères requis.");
-        } else {
-          setError("Une erreur est survenue lors de l'inscription.");
-        }
-        setLoading(false);
-        return;
-      }
-
-      const user = data.user;
-      const session = data.session;
-      if (user) {
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert([{ id: user.id, pseudo: pseudo.trim(), is_premium: false }]);
-        if (profileError) {
-          setError("Erreur lors de la création du profil.");
-        } else if (session) {
-          router.push("/");
-        } else {
-          setSuccess("Compte créé ! Vérifiez votre boîte mail.");
-          setTimeout(() => router.push("/Connexion"), 3000);
-        }
-      }
+      setSuccess(result.message || "Compte créé ! Vérifiez votre boîte mail.");
+      setTimeout(() => router.push("/Connexion"), 3000);
     } catch {
       setError("Erreur lors de l'inscription.");
     }
@@ -147,8 +119,8 @@ export default function Inscription() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen ios-sky-default flex flex-col items-center justify-center px-5 pt-5 pb-28">
-        <div className="ios-glass rounded-[28px] w-full max-w-sm p-8 animate-ios-appear">
+      <div className="min-h-screen ios-sky-default flex flex-col items-center justify-center px-5 pt-5 pb-28 md:pt-36 md:pb-8">
+        <div className="ios-glass rounded-[28px] w-full max-w-sm p-6 sm:p-8 animate-ios-appear">
           {/* En-tête */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 ios-glass-dark rounded-[18px] flex items-center justify-center mx-auto mb-4">
@@ -225,6 +197,15 @@ export default function Inscription() {
                 placeholder="••••••••"
                 required
                 className="w-full ios-glass-dark rounded-2xl px-4 py-3.5 text-white placeholder-white/30 text-sm font-medium outline-none border border-transparent focus:border-white/30 transition-all"
+              />
+            </div>
+
+            {/* Captcha */}
+            <div className="w-full overflow-hidden rounded-xl">
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                onSuccess={setCaptchaToken}
+                options={{ theme: "dark", size: "flexible" }}
               />
             </div>
 

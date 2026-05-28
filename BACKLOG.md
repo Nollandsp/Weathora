@@ -80,6 +80,7 @@
 
 ### Sécurité
 
+- [x] **Clé OpenWeather protégée** : passe par les routes API Next.js côté serveur, aucune exposition au navigateur
 - [x] **Régénération complète des clés API Supabase** (anon + service_role)
 - [x] **Trigger SQL `enforce_favorites_limit`** créé pour bloquer l'ajout de favoris au-delà de 3 côté serveur (anti-bypass de la limite Premium)
 - [x] **Rate limiting Supabase Auth** configuré (5 requêtes / 5 minutes / IP sur sign-up et sign-in)
@@ -88,6 +89,7 @@
 - [x] **Vérification d'unicité du pseudo** à l'inscription (sur branche dev)
 - [x] **Règles de mot de passe strictes** : minimum 8 caractères + 1 caractère spécial obligatoire (sur branche dev)
 - [x] Persistance de session : corrigée (3 fix dans client.js, Navbar/index.js, Connexion/page.js)
+- [x] Intégration Cloudflare Turnstile sur Connexion et Inscription (anti-brute force)
 
 ### Tests réalisés (résumé)
 

@@ -29,7 +29,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try { await supabase.auth.signOut(); } catch { /* session déjà invalide */ }
     toast.success("Déconnexion réussie !");
     setTimeout(() => { window.location.href = "/Connexion"; }, 1200);
   };

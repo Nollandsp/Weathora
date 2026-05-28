@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Eye, EyeOff, LogIn } from "lucide-react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function Connexion() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ export default function Connexion() {
   const [error, setError] = useState("");
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [retryAfter, setRetryAfter] = useState(0);
+  const [captchaToken, setCaptchaToken] = useState(null);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -27,6 +29,7 @@ export default function Connexion() {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
+        options: { captchaToken },
       });
       if (error) {
         const next = failedAttempts + 1;
@@ -56,9 +59,9 @@ export default function Connexion() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen ios-sky-clear-night flex flex-col items-center justify-center p-5">
+      <div className="min-h-screen ios-sky-clear-night flex flex-col items-center justify-center p-5 md:pt-36">
         {/* Card glass */}
-        <div className="ios-glass rounded-[28px] w-full max-w-sm p-8 animate-ios-appear">
+        <div className="ios-glass rounded-[28px] w-full max-w-sm p-6 sm:p-8 animate-ios-appear">
           {/* Logo / titre */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 ios-glass-dark rounded-[18px] flex items-center justify-center mx-auto mb-4">
@@ -117,6 +120,15 @@ export default function Connexion() {
               </div>
             </div>
 
+            {/* Captcha */}
+            <div className="w-full overflow-hidden rounded-xl">
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                onSuccess={setCaptchaToken}
+                options={{ theme: "dark", size: "flexible" }}
+              />
+            </div>
+
             {/* Submit */}
             <button
               type="submit"
@@ -126,6 +138,13 @@ export default function Connexion() {
               {loading ? "Connexion..." : retryAfter > 0 ? `Réessayer dans ${retryAfter}s` : "Se connecter"}
             </button>
           </form>
+
+          {/* Mot de passe oublié */}
+          <div className="mt-4 text-center">
+            <a href="/mot-de-passe-oublie" className="text-white/40 hover:text-white/70 text-sm transition-colors">
+              Mot de passe oublié ?
+            </a>
+          </div>
 
           {/* Divider + lien inscription */}
           <div className="mt-6 pt-6 border-t border-white/10 text-center">
