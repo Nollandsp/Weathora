@@ -89,6 +89,7 @@
 - [x] **Vérification d'unicité du pseudo** à l'inscription (sur branche dev)
 - [x] **Règles de mot de passe strictes** : minimum 8 caractères + 1 caractère spécial obligatoire (sur branche dev)
 - [x] Persistance de session : corrigée (3 fix dans client.js, Navbar/index.js, Connexion/page.js)
+- [x] Intégration Cloudflare Turnstile sur Connexion et Inscription (anti-brute force)
 
 ### Tests réalisés (résumé)
 

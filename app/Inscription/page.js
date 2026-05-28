@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -78,57 +77,27 @@ export default function Inscription() {
     }
 
     try {
-      const checkRes = await fetch("/api/check-pseudo", {
+      const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pseudo: pseudo.trim() }),
+        body: JSON.stringify({
+          pseudo: pseudo.trim(),
+          email: email.trim().toLowerCase(),
+          password,
+          captchaToken,
+        }),
       });
-      const { taken } = await checkRes.json();
-      if (taken) {
-        setError("Ce pseudo est déjà utilisé, choisis-en un autre.");
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        setError(result.error || "Une erreur est survenue lors de l'inscription.");
         setLoading(false);
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim().toLowerCase(),
-        password,
-        options: { captchaToken },
-      });
-      if (error) {
-        const msg = error.message?.toLowerCase() ?? "";
-        if (
-          msg.includes("already registered") ||
-          msg.includes("already exists") ||
-          msg.includes("email address is already")
-        ) {
-          setError("Un compte existe déjà avec cette adresse email.");
-        } else if (msg.includes("invalid email")) {
-          setError("Adresse email invalide.");
-        } else if (msg.includes("password")) {
-          setError("Le mot de passe ne respecte pas les critères requis.");
-        } else {
-          setError("Une erreur est survenue lors de l'inscription.");
-        }
-        setLoading(false);
-        return;
-      }
-
-      const user = data.user;
-      const session = data.session;
-      if (user) {
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert([{ id: user.id, pseudo: pseudo.trim(), is_premium: false }]);
-        if (profileError) {
-          setError("Erreur lors de la création du profil.");
-        } else if (session) {
-          router.push("/");
-        } else {
-          setSuccess("Compte créé ! Vérifiez votre boîte mail.");
-          setTimeout(() => router.push("/Connexion"), 3000);
-        }
-      }
+      setSuccess(result.message || "Compte créé ! Vérifiez votre boîte mail.");
+      setTimeout(() => router.push("/Connexion"), 3000);
     } catch {
       setError("Erreur lors de l'inscription.");
     }
