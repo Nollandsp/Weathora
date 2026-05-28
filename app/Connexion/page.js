@@ -139,6 +139,13 @@ export default function Connexion() {
             </button>
           </form>
 
+          {/* Mot de passe oublié */}
+          <div className="mt-4 text-center">
+            <a href="/mot-de-passe-oublie" className="text-white/40 hover:text-white/70 text-sm transition-colors">
+              Mot de passe oublié ?
+            </a>
+          </div>
+
           {/* Divider + lien inscription */}
           <div className="mt-6 pt-6 border-t border-white/10 text-center">
             <p className="text-white/40 text-sm">
