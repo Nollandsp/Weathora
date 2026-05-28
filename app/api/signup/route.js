@@ -155,6 +155,18 @@ export async function POST(request) {
       );
     }
 
+    // Email déjà existant : identities vide
+    if (
+      authData.user &&
+      Array.isArray(authData.user.identities) &&
+      authData.user.identities.length === 0
+    ) {
+      return NextResponse.json(
+        { error: "Un compte existe déjà avec cette adresse email." },
+        { status: 400 }
+      );
+    }
+
     const userId = authData.user?.id;
     if (!userId) {
       return NextResponse.json(
