@@ -1,6 +1,5 @@
 "use client";
 
-import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
 
 export default function WeatherMap({ lat, lon, cityName }) {
@@ -9,6 +8,14 @@ export default function WeatherMap({ lat, lon, cityName }) {
 
   useEffect(() => {
     if (!containerRef.current) return;
+
+    if (!document.getElementById("leaflet-css")) {
+      const link = document.createElement("link");
+      link.id = "leaflet-css";
+      link.rel = "stylesheet";
+      link.href = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";
+      document.head.appendChild(link);
+    }
 
     import("leaflet").then((L) => {
       if (mapRef.current) {

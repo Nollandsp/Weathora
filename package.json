@@ -29,5 +29,11 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4"
-  }
+  },
+  "browserslist": [
+    "chrome >= 93",
+    "firefox >= 92",
+    "safari >= 15",
+    "edge >= 93"
+  ]
 }
