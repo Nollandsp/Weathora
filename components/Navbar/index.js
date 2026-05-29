@@ -7,29 +7,35 @@ import { useState, useEffect } from "react";
 import { Home, Heart, Crown, User, LogOut, UserPlus, LogIn } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { toast } from "sonner";
+import ThemeToggle from "@/components/ThemeToggle";
+
+const SESSION_COOKIE = `weathora_session=1; path=/; max-age=${7 * 24 * 3600}; SameSite=Lax`;
+const CLEAR_COOKIE = "weathora_session=; path=/; max-age=0; SameSite=Lax";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // INITIAL_SESSION se déclenche dès que Supabase a restauré la session depuis localStorage
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_OUT") {
         setUser(null);
+        document.cookie = CLEAR_COOKIE;
       } else {
         setUser(session?.user ?? null);
+        if (session?.user) document.cookie = SESSION_COOKIE;
       }
     });
-    // Lecture directe en parallèle pour affichage immédiat sans attendre l'event
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) document.cookie = SESSION_COOKIE;
     });
     return () => listener?.subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
     try { await supabase.auth.signOut(); } catch { /* session déjà invalide */ }
+    document.cookie = CLEAR_COOKIE;
     toast.success("Déconnexion réussie !");
     setTimeout(() => { window.location.href = "/Connexion"; }, 1200);
   };
@@ -56,12 +62,16 @@ export default function Navbar() {
           size={22}
           strokeWidth={active ? 2.2 : 1.8}
           className={`relative z-10 transition-colors duration-200 ${
-            active ? "text-zinc-900" : "text-zinc-700 group-hover:text-zinc-900"
+            active
+              ? "text-zinc-900 dark:text-white"
+              : "text-zinc-700 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white"
           }`}
         />
         <span
           className={`relative z-10 text-[9px] font-semibold tracking-wide leading-none transition-colors duration-200 ${
-            active ? "text-zinc-900" : "text-zinc-600 group-hover:text-zinc-900"
+            active
+              ? "text-zinc-900 dark:text-white"
+              : "text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white"
           }`}
         >
           {label}
@@ -84,9 +94,9 @@ export default function Navbar() {
       <LogOut
         size={22}
         strokeWidth={1.8}
-        className="text-zinc-700 group-hover:text-red-500 transition-colors duration-200"
+        className="text-zinc-700 dark:text-zinc-200 group-hover:text-red-500 transition-colors duration-200"
       />
-      <span className="text-[9px] font-semibold tracking-wide leading-none text-zinc-600 group-hover:text-red-500 transition-colors duration-200">
+      <span className="text-[9px] font-semibold tracking-wide leading-none text-zinc-600 dark:text-zinc-400 group-hover:text-red-500 transition-colors duration-200">
         Quitter
       </span>
     </button>
@@ -119,15 +129,18 @@ export default function Navbar() {
             </div>
           </Link>
 
-          <div className="w-px h-7 bg-black/10 shrink-0 mx-1.5" />
+          <div className="w-px h-7 bg-black/10 dark:bg-white/10 shrink-0 mx-1.5" />
 
           {navItems.map(({ href, Icon, label }) => (
             <NavItem key={href} href={href} Icon={Icon} label={label} />
           ))}
 
+          <div className="w-px h-7 bg-black/10 dark:bg-white/10 shrink-0 mx-1.5" />
+          <ThemeToggle />
+
           {user && (
             <>
-              <div className="w-px h-7 bg-black/10 shrink-0 mx-1.5" />
+              <div className="w-px h-7 bg-black/10 dark:bg-white/10 shrink-0 mx-1.5" />
               <LogoutButton />
             </>
           )}
@@ -180,7 +193,6 @@ export default function Navbar() {
           {user && <LogoutButton mobile />}
         </nav>
       </div>
-
     </>
   );
 }

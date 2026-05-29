@@ -251,12 +251,35 @@ export default function MainWeather({ setFullCityName, setCoords }) {
         setSkyClass(getSkyClass(weather[0].main, weather[0].icon));
         if (setCoords) setCoords({ lat: coord.lat, lon: coord.lon });
 
+        // Alertes conditions extrêmes
+        const cond = weather[0].main?.toLowerCase() || "";
+        if (cond === "thunderstorm") {
+          toast.warning("Orage en cours — évitez les sorties et les zones exposées");
+        } else if (main.temp >= 38) {
+          toast.warning(`Canicule — ${Math.round(main.temp)}°C détectés, hydratez-vous régulièrement`);
+        } else if (main.temp <= -5) {
+          toast.warning(`Grand froid — ${Math.round(main.temp)}°C, couvrez-vous bien`);
+        } else if (cond === "snow") {
+          toast.warning("Chutes de neige — prudence sur les routes");
+        }
+        if (wind.speed * 3.6 >= 75) {
+          toast.warning(`Vents violents — ${Math.round(wind.speed * 3.6)} km/h, restez à l'abri`);
+        }
+        if (vis !== undefined && vis < 1000) {
+          toast.warning("Brouillard dense — visibilité réduite, soyez prudent");
+        }
+
         // Qualité de l'air
         const airRes = await fetch(
           `/api/weather/air?lat=${coord.lat}&lon=${coord.lon}`,
         );
         const airData = await airRes.json();
-        if (airData?.list?.[0]?.main?.aqi) setAqi(airData.list[0].main.aqi);
+        if (airData?.list?.[0]?.main?.aqi) {
+          setAqi(airData.list[0].main.aqi);
+          if (airData.list[0].main.aqi >= 4) {
+            toast.warning("Qualité de l'air mauvaise — limitez les activités extérieures");
+          }
+        }
       } catch {
         setError("Erreur de connexion");
       }

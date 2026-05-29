@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import ToasterProvider from "@/components/ToasterProvider";
 
 const inter = Inter({
@@ -21,15 +22,17 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr" className={inter.variable}>
+    <html lang="fr" className={inter.variable} suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#1e3a5f" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="relative min-h-screen">
-        <div className="relative z-10">{children}</div>
-        <ToasterProvider />
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <div className="relative z-10">{children}</div>
+          <ToasterProvider />
+        </ThemeProvider>
       </body>
     </html>
   );
