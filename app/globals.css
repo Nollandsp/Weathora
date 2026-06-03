@@ -353,7 +353,7 @@
 
 /* Fond de secours : évite le blanc du body si un gradient ne couvre pas tout */
 html, body {
-  background-color: #16161a;
+  background-color: #0d1a2e;
 }
 
 /* Safe area — home indicator iPhone */
