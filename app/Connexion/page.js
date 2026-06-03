@@ -59,7 +59,7 @@ export default function Connexion() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen ios-sky-clear-night flex flex-col items-center justify-center p-5 md:pt-36">
+      <div className="min-h-screen ios-sky-clear-night flex flex-col items-center justify-center p-5 pb-28 md:pb-5 md:pt-36">
         {/* Card glass */}
         <div className="ios-glass rounded-[28px] w-full max-w-sm p-6 sm:p-8 animate-ios-appear">
           {/* Logo / titre */}
